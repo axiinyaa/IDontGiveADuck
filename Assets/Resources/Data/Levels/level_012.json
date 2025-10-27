@@ -2,7 +2,7 @@
   "levelId": 12,
   "levelName": "Master Challenge",
   "goodDucks": 23,
-  "decoyDucks": 10,
+  "geese": 10,
   "maxTotalSpawns": 36,
   "timeLimit": 40,
   "spawnRate": 0.95,

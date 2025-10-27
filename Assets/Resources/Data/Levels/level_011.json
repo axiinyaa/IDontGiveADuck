@@ -2,7 +2,7 @@
   "levelId": 11,
   "levelName": "Maximum Pressure",
   "goodDucks": 21,
-  "decoyDucks": 9,
+  "geese": 9,
   "maxTotalSpawns": 33,
   "timeLimit": 40,
   "spawnRate": 1.0,

@@ -88,7 +88,6 @@ public class UIManager : MonoBehaviour
         {
             GameManager.Instance.OnScoreChanged += UpdateScore;        // When score changes
             GameManager.Instance.OnLivesChanged += UpdateLives;        // When lives change
-            GameManager.Instance.OnTimeChanged += UpdateTimer;         // When time changes
             GameManager.Instance.OnGameStateChanged += UpdateGameState; // When game state changes
             GameManager.Instance.OnLevelLoaded += UpdateLevelInfo;     // When new level loads
         }
@@ -109,7 +108,6 @@ public class UIManager : MonoBehaviour
         {
             GameManager.Instance.OnScoreChanged -= UpdateScore;
             GameManager.Instance.OnLivesChanged -= UpdateLives;
-            GameManager.Instance.OnTimeChanged -= UpdateTimer;
             GameManager.Instance.OnGameStateChanged -= UpdateGameState;
             GameManager.Instance.OnLevelLoaded -= UpdateLevelInfo;
         }
@@ -159,28 +157,6 @@ public class UIManager : MonoBehaviour
     }
     
     /// <summary>
-    /// Updates the timer display and changes colour when time is running low
-    /// Converts seconds to minutes:seconds format and shows warning colour
-    /// </summary>
-    public void UpdateTimer(float timeLeft)
-    {
-        if (timerText != null)
-        {
-            // Convert total seconds to minutes and seconds
-            int minutes = Mathf.FloorToInt(timeLeft / 60);  // FloorToInt rounds down to nearest integer
-            int seconds = Mathf.FloorToInt(timeLeft % 60);  // % is modulo operator (remainder after division)
-            timerText.text = $"Time: {minutes:00}:{seconds:00}";  // :00 format ensures 2 digits
-            
-            // Change colour to red when time is running low
-            if (timeLeft <= timerWarningThreshold)
-                // Lerp smoothly transitions between colours based on remaining time
-                timerText.color = Color.Lerp(timerWarningColor, originalTimerColor, timeLeft / timerWarningThreshold);
-            else
-                timerText.color = originalTimerColor;
-        }
-    }
-    
-    /// <summary>
     /// Updates the lives display
     /// </summary>
     public void UpdateLives(int lives)
@@ -207,8 +183,8 @@ public class UIManager : MonoBehaviour
     {
         if (progressText != null && GameManager.Instance != null)
         {
-            int clicked = GameManager.Instance.GoodDucksClicked;
-            int required = GameManager.Instance.GoodDucksRequired;
+            int clicked = GameManager.Instance.GeeseClicked;
+            int required = GameManager.Instance.GeeseRequired;
             progressText.text = $"Progress: {clicked}/{required}";
         }
     }
@@ -525,7 +501,7 @@ public class UIManager : MonoBehaviour
         GUILayout.Label("=== DEBUG INFO ===");
         GUILayout.Label($"State: {GameManager.Instance.CurrentState}");
         GUILayout.Label($"Level: {GameManager.Instance.CurrentLevelId}");
-        GUILayout.Label($"Ducks: {GameManager.Instance.GoodDucksClicked}/{GameManager.Instance.GoodDucksRequired}");
+        GUILayout.Label($"Ducks: {GameManager.Instance.GeeseClicked}/{GameManager.Instance.GeeseRequired}");
         GUILayout.Label($"Spawns: {GameManager.Instance.TotalGoodDucksSpawned}/{GameManager.Instance.MaxTotalSpawns}");
         GUILayout.Label($"Time: {GameManager.Instance.TimeLeft:F1}s");
         GUILayout.Label($"Lives: {GameManager.Instance.Lives}");

@@ -1,8 +1,8 @@
 {
   "levelId": 6,
   "levelName": "Precision Test",
-  "goodDucks": 11,
-  "decoyDucks": 4,
+  "goodDucks": 8,
+  "geese": 11,
   "maxTotalSpawns": 18,
   "timeLimit": 30,
   "spawnRate": 1.6,

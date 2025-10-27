@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 /// Abstract base class for all duck types
 /// Provides common functionality and enforces consistent interface
 /// </summary>
-public abstract class BaseDuck : MonoBehaviour
+public abstract class BaseCharacter : MonoBehaviour
 {
     [Header("Base Duck Properties")]
     [SerializeField] protected int pointValue = 1;
@@ -20,6 +20,14 @@ public abstract class BaseDuck : MonoBehaviour
     protected float currentLifetime;
     protected bool isClicked = false;
     protected bool isInitialized = false;
+    public bool finishedLanding = false;
+    public Vector2 startingPosition;
+    public Vector2 spawnPosition;
+    public Rigidbody2D body;
+    public Collider2D collision;
+
+    // Movement
+    public Vector2 targetPosition;
     
     // Public properties for external access
     public int PointValue => pointValue;
@@ -30,36 +38,15 @@ public abstract class BaseDuck : MonoBehaviour
     protected virtual void Start()
     {
         Initialize();
-        
-        // Auto-fit collider to sprite bounds
-        AutoFitCollider();
+
+        startingPosition = transform.position;
+        targetPosition = transform.position;
+        transform.position = new Vector3(startingPosition.x, startingPosition.y + 30f, -1);
+
+        body = GetComponent<Rigidbody2D>();
+        collision = GetComponent<Collider2D>();
     }
-    
-    /// <summary>
-    /// Automatically fit the BoxCollider2D to the sprite bounds
-    /// </summary>
-    private void AutoFitCollider()
-    {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        BoxCollider2D boxCollider = GetComponent<BoxCollider2D>();
-        
-        if (spriteRenderer != null && boxCollider != null && spriteRenderer.sprite != null)
-        {
-            // Set collider size to match sprite bounds exactly
-            Vector2 spriteSize = spriteRenderer.sprite.bounds.size;
-            boxCollider.size = spriteSize;
-            
-            // Center the collider
-            boxCollider.offset = Vector2.zero;
-            
-            Debug.Log($"Auto-fitted collider for {gameObject.name}: size = {boxCollider.size}");
-        }
-        else
-        {
-            Debug.LogWarning($"Could not auto-fit collider for {gameObject.name} - missing components");
-        }
-    }
-    
+
     /// <summary>
     /// Called every frame by Unity - this is where we handle all duck behaviour
     /// 
@@ -73,43 +60,22 @@ public abstract class BaseDuck : MonoBehaviour
         // Safety check: Don't do anything if duck isn't properly set up yet
         // This prevents errors during the brief moment between object creation and initialization
         if (!isInitialized) return;
-        
-        // Handle duck lifetime countdown and expiration
-        // This makes ducks disappear after their time is up
-        HandleLifetime();
-        
+
+        if (Vector2.Distance(transform.position, startingPosition) > 2f && !finishedLanding)
+        {
+            transform.position = Vector2.Lerp(transform.position, startingPosition, Time.deltaTime);
+        }
+        else
+        {
+            finishedLanding = true;
+        }
+    }
+    
+    protected virtual void FixedUpdate()
+    {
         // Handle duck movement (if any)
         // Currently not implemented but ready for future moving ducks
         HandleMovement();
-        
-        // Check if player has clicked on this duck
-        // Uses Unity's new Input System for better input handling
-        HandleClickDetection();
-    }
-    /// <summary>
-    /// Handle mouse click detection using new Input System
-    /// </summary>
-    private void HandleClickDetection()
-    {
-        if (isClicked) return;
-        
-        // Check if mouse button was pressed this frame
-        if (Mouse.current?.leftButton.wasPressedThisFrame == true)
-        {
-            // Cast ray from mouse position to check if we hit this duck
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-            
-            Collider2D hitCollider = Physics2D.OverlapPoint(worldPos);
-            if (hitCollider != null && hitCollider.gameObject == gameObject)
-            {
-                isClicked = true;
-                // Disable collider to prevent further clicks
-                Collider2D col = GetComponent<Collider2D>();
-                if (col != null) col.enabled = false;
-                OnClicked();
-            }
-        }
     }
     
     // Keep OnMouseDown as backup for older Unity versions
@@ -136,7 +102,7 @@ public abstract class BaseDuck : MonoBehaviour
     {
         currentLifetime = customLifetime > 0 ? customLifetime : lifetime;
         if (customPointValue > 0) pointValue = customPointValue;
-        
+
         isInitialized = true;
         OnDuckSpawned();
     }
@@ -146,32 +112,14 @@ public abstract class BaseDuck : MonoBehaviour
     #region Core Behaviors
     
     /// <summary>
-    /// Handle duck lifetime countdown
-    /// </summary>
-    protected virtual void HandleLifetime()
-    {
-        currentLifetime -= Time.deltaTime;
-        
-        // Visual feedback as lifetime gets low
-        if (currentLifetime <= 1f)
-        {
-            OnLifetimeLow();
-        }
-        
-        if (currentLifetime <= 0 && !isClicked)
-        {
-            OnLifetimeExpired();
-            DestroyDuck();
-        }
-    }
-    
-    /// <summary>
     /// Handle duck movement (override in child classes)
     /// </summary>
     protected virtual void HandleMovement()
     {
         // Base implementation - no movement
         // Override in child classes for moving ducks
+
+        
     }
     
     /// <summary>
@@ -204,12 +152,7 @@ public abstract class BaseDuck : MonoBehaviour
     /// <summary>
     /// Handle duck click behaviour - specific to each duck type
     /// </summary>
-    protected abstract void OnClicked();
-    
-    /// <summary>
-    /// Handle what happens when duck lifetime expires naturally
-    /// </summary>
-    protected abstract void OnLifetimeExpired();
+    public abstract void OnClicked();
     
     #endregion
     
@@ -236,17 +179,6 @@ public abstract class BaseDuck : MonoBehaviour
     #endregion
     
     #region Debug Helpers
-    
-    protected virtual void OnDrawGizmos()
-    {
-        // Draw lifetime indicator in scene view
-        if (Application.isPlaying && isInitialized)
-        {
-            float lifetimePercent = currentLifetime / lifetime;
-            Gizmos.color = Color.Lerp(Color.red, Color.green, lifetimePercent);
-            Gizmos.DrawWireSphere(transform.position + Vector3.up, 0.5f);
-        }
-    }
     
     #endregion
 }

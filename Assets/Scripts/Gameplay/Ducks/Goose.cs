@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Decoy duck that penalises players when clicked
 /// </summary>
-public class DecoyDuck : BaseDuck
+public class Goose : BaseCharacter
 {
     [Header("Decoy Duck Settings")]
     [SerializeField] private ParticleSystem penaltyParticles;
@@ -30,13 +30,13 @@ public class DecoyDuck : BaseDuck
     
     #region Abstract Implementation
     
-    protected override void OnClicked()
+    public override void OnClicked()
     {
         
         // Notify game manager about penalty
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.OnDecoyDuckClicked(this);
+            GameManager.Instance.OnGooseClicked(this);
         }
         
         // Play penalty feedback
@@ -46,19 +46,6 @@ public class DecoyDuck : BaseDuck
         DestroyDuck();
     }
     
-    protected override void OnLifetimeExpired()
-    {
-        Debug.Log("Decoy duck expired naturally - no penalty");
-        
-        // Notify game manager (no penalty for natural expiration)
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnDecoyDuckExpired(this);
-        }
-        
-        // No penalty effects for natural expiration
-    }
-    
     #endregion
     
     #region Virtual Overrides
@@ -66,13 +53,7 @@ public class DecoyDuck : BaseDuck
     protected override void OnDuckSpawned()
     {
         base.OnDuckSpawned();
-        
-        // Decoy duck specific spawn behaviour
-        // Could add subtle spawn differences
-        
-        // Ensure proper tag for identification
-        gameObject.tag = "DecoyDuck";
-        
+    
         // Optional: Add subtle behavioural differences
         if (subtleVisualDifference)
         {
@@ -82,24 +63,22 @@ public class DecoyDuck : BaseDuck
     
     protected override void HandleMovement()
     {
-        base.HandleMovement();
-        
-        // NOTE: This movement code is currently not active!
-        // The base BaseDuck class has moveSpeed = 0f by default
-        // To see this movement in action, you would need to:
-        // 1. Set moveSpeed > 0 in the Inspector, OR
-        // 2. Override the moveSpeed property in this DecoyDuck class
-        
-        // Decoy ducks could have slightly different movement patterns
-        // This could help players learn to distinguish them from good ducks
-        if (moveSpeed > 0)
+        if (!finishedLanding) return;
+
+        float minDistance = 0.1f;
+
+        if (Vector2.Distance(transform.position, targetPosition) < minDistance)
         {
-            // Example: Decoy ducks move in a slightly different pattern (subtle wiggle)
-            // This creates a small horizontal oscillation that observant players might notice
-            float wiggle = Mathf.Sin(Time.time * 2f) * 0.1f;
-            transform.position += Vector3.right * wiggle * Time.deltaTime;
+            Vector3 randomPosition = GameManager.Instance.spawner.GetRandomSpawnPosition();
+
+            targetPosition = randomPosition;
         }
-        // If moveSpeed is 0 (default), this duck won't move at all
+        else
+        {
+            body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * 10) - new Vector2(transform.position.x, transform.position.y);
+        }
+
+        spriteRenderer.flipX = body.linearVelocityX > 0;
     }
     
     #endregion
@@ -130,9 +109,7 @@ public class DecoyDuck : BaseDuck
         {
             GameObject penaltyText = Instantiate(penaltyTextPrefab, transform.position, Quaternion.identity);
             // Assume the prefab has a script to handle floating animation
-        }
-        
-        
+        } 
     }
     
     /// <summary>
@@ -147,9 +124,6 @@ public class DecoyDuck : BaseDuck
         // Slight scale difference (barely noticeable)
         float scaleVariation = Random.Range(0.95f, 1.05f);
         transform.localScale *= scaleVariation;
-        
-        // Slight rotation variation
-        transform.rotation *= Quaternion.Euler(0, 0, Random.Range(-2f, 2f));
     }
     
     #endregion

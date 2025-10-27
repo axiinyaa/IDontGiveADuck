@@ -1,8 +1,8 @@
 {
   "levelId": 4,
   "levelName": "Speed Increase",
-  "goodDucks": 7,
-  "decoyDucks": 2,
+  "goodDucks": 3,
+  "geese": 8,
   "maxTotalSpawns": 12,
   "timeLimit": 25,
   "spawnRate": 2.0,

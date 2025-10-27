@@ -1,8 +1,8 @@
 {
   "levelId": 2,
   "levelName": "First Challenge",
-  "goodDucks": 4,
-  "decoyDucks": 1,
+  "goodDucks": 3,
+  "geese": 5,
   "maxTotalSpawns": 8,
   "timeLimit": 25,
   "spawnRate": 2.5,

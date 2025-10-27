@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -19,7 +20,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     
     [Header("Game Configuration")]
-    [SerializeField] private int startingLives = 1;    // Number of lives player starts with
+    [SerializeField] private int startingLives = 3;    // Number of lives player starts with
     [SerializeField] private int currentLevelId = 1;   // Current level being played
     
     [Header("Testing Tools")]
@@ -28,9 +29,9 @@ public class GameManager : MonoBehaviour
     
     [Header("Current Game State")]
     [SerializeField] private int score = 0;             // Player's current score
-    [SerializeField] private int lives = 1;             // Remaining lives
+    [SerializeField] private int lives = 3;             // Remaining lives
     [SerializeField] private float timeLeft = 30f;      // Time remaining in current level
-    [SerializeField] private int goodDucksClicked = 0;  // Number of good ducks clicked
+    [SerializeField] private int geeseClicked = 0;  // Number of good ducks clicked
     [SerializeField] private int goodDucksMissed = 0;   // Number of good ducks missed
     [SerializeField] private int totalGoodDucksSpawned = 0; // Total good ducks spawned this level
     
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
     public System.Action<float> OnTimeChanged;          // Fired when time changes
     public System.Action<GameState> OnGameStateChanged; // Fired when game state changes
     public System.Action<LevelData> OnLevelLoaded;      // Fired when a new level is loaded
+    public DuckSpawner spawner;
     
     #region Unity Lifecycle
     
@@ -69,25 +71,37 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
+
     /// <summary>
     /// Called after Awake, when the GameObject becomes active
     /// Loads the first level to start the game
     /// </summary>
     void Start()
     {
+        spawner = FindFirstObjectByType<DuckSpawner>();
+
         LoadCurrentLevel();
     }
     
-    /// <summary>
-    /// Called every frame
-    /// Updates the game timer when actively playing
-    /// </summary>
     void Update()
     {
-        if (currentState == GameState.Playing)
+        // Check if mouse button was pressed this frame
+        if (Mouse.current?.leftButton.wasPressedThisFrame == true)
         {
-            UpdateGameTimer();
+            // Cast ray from mouse position to check if we hit this duck
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+
+            Vector2 mousePos2D = new Vector2(worldPos.x, worldPos.y);
+
+            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
+            
+            if (hit.collider != null && hit.collider.CompareTag("Clickable"))
+            {
+                // Disable collider to prevent further clicks
+                hit.collider.enabled = false;
+                hit.collider.GetComponent<BaseCharacter>().OnClicked();
+            }
         }
     }
     
@@ -137,7 +151,7 @@ public class GameManager : MonoBehaviour
         
         // Reset level-specific variables
         timeLeft = currentLevel.timeLimit;
-        goodDucksClicked = 0;
+        geeseClicked = 0;
         goodDucksMissed = 0;
         totalDucksSpawned = 0;
         totalGoodDucksSpawned = 0;
@@ -177,7 +191,7 @@ public class GameManager : MonoBehaviour
     public void JumpToLevel(int levelId)
     {
         // Stop current duck spawning
-        DuckSpawner spawner = FindFirstObjectByType<DuckSpawner>();
+        
         if (spawner != null)
         {
             spawner.StopSpawning();
@@ -232,7 +246,7 @@ public class GameManager : MonoBehaviour
     public void RestartLevel()
     {
         // Stop current duck spawning
-        DuckSpawner spawner = FindFirstObjectByType<DuckSpawner>();
+        
         if (spawner != null)
         {
             spawner.StopSpawning();
@@ -241,11 +255,11 @@ public class GameManager : MonoBehaviour
         // Complete reset to level 1
         currentLevelId = 1;
         score = 0;
-        lives = 1;
+        lives = 3;
         
         // Reset all game state
         timeLeft = 30f;
-        goodDucksClicked = 0;
+        geeseClicked = 0;
         goodDucksMissed = 0;
         totalDucksSpawned = 0;
         totalGoodDucksSpawned = 0;
@@ -295,7 +309,7 @@ public class GameManager : MonoBehaviour
         levelStartTime = Time.time;
         
         // Start spawning ducks
-        DuckSpawner spawner = FindFirstObjectByType<DuckSpawner>();
+        
         if (spawner != null)
         {
             spawner.StartSpawning(currentLevel);
@@ -332,7 +346,7 @@ public class GameManager : MonoBehaviour
         currentState = won ? GameState.LevelComplete : GameState.GameOver;
         
         // Stop spawning ducks
-        DuckSpawner spawner = FindFirstObjectByType<DuckSpawner>();
+        
         if (spawner != null)
         {
             spawner.StopSpawning();
@@ -377,68 +391,46 @@ public class GameManager : MonoBehaviour
     /// 3. Updates the UI
     /// 4. Checks if the level is complete
     /// </summary>
-    public void OnGoodDuckClicked(GoodDuck duck)
+    public void OnGoodDuckClicked(Duck duck)
     {
         if (currentState != GameState.Playing) return;
-        
-        score += duck.PointValue;
-        goodDucksClicked++;
-        
-        OnScoreChanged?.Invoke(score);
-        
-        // Check win condition - player got required good ducks
-        if (goodDucksClicked >= currentLevel.goodDucks)
+
+        lives--;
+
+        OnLivesChanged.Invoke(lives);
+
+        if (lives <= 0)
         {
-            EndGame(true);
+            EndGame(false);
         }
     }
-    
-    /// <summary>
-    /// Called when a good duck expires (player missed it)
-    /// 
-    /// Currently just tracks the statistic
-    /// Could be extended to add penalties or other mechanics
-    /// </summary>
-    public void OnGoodDuckMissed(GoodDuck duck)
+
+
+    public void OnGoodDuckLost(Duck duck)
     {
         if (currentState != GameState.Playing) return;
-        
-        goodDucksMissed++;
-    }
-    
-    /// <summary>
-    /// Called when player clicks a decoy duck
-    /// 
-    /// This method:
-    /// 1. Applies a time penalty
-    /// 2. Updates the UI
-    /// 3. Checks if the penalty caused game over
-    /// </summary>
-    public void OnDecoyDuckClicked(DecoyDuck duck)
-    {
-        if (currentState != GameState.Playing) return;
-        
-        // Apply time penalty from level configuration
-        timeLeft -= currentLevel.decoyPenalty;
-        OnTimeChanged?.Invoke(timeLeft);
-        
-        // Check if penalty caused game over
-        if (timeLeft <= 0)
+
+        lives--;
+
+        OnLivesChanged.Invoke(lives);
+
+        if (lives <= 0)
         {
-            timeLeft = 0;
             EndGame(false);
         }
     }
     
-    /// <summary>
-    /// Called when a decoy duck expires naturally
-    /// 
-    /// No penalty for decoys that expire naturally
-    /// Could be extended for additional mechanics
-    /// </summary>
-    public void OnDecoyDuckExpired(DecoyDuck duck)
+    
+    public void OnGooseClicked(Goose goose)
     {
         if (currentState != GameState.Playing) return;
+
+        geeseClicked++;
+        
+        if (geeseClicked >= currentLevel.geese)
+        {
+            EndGame(true);
+        }
     }
     
     /// <summary>
@@ -464,31 +456,6 @@ public class GameManager : MonoBehaviour
     
     #endregion
     
-    #region Game Timer
-    
-    /// <summary>
-    /// Updates the game timer every frame
-    /// 
-    /// This method:
-    /// 1. Decreases time remaining
-    /// 2. Updates the UI
-    /// 3. Checks if time ran out
-    /// </summary>
-    private void UpdateGameTimer()
-    {
-        timeLeft -= Time.deltaTime;
-        OnTimeChanged?.Invoke(timeLeft);
-        
-        // Check if time ran out
-        if (timeLeft <= 0)
-        {
-            timeLeft = 0;
-            EndGame(false);
-        }
-    }
-    
-    #endregion
-    
     #region Game Completion Handlers
     
     /// <summary>
@@ -501,6 +468,10 @@ public class GameManager : MonoBehaviour
     {
         int timeBonus = Mathf.RoundToInt(timeLeft * 10);
         score += timeBonus;
+
+        currentState = GameState.LevelComplete;
+
+        spawner.ClearActiveDucks();
         
         OnScoreChanged?.Invoke(score);
     }
@@ -542,11 +513,11 @@ public class GameManager : MonoBehaviour
     public GameState CurrentState => currentState;
     public LevelData CurrentLevel => currentLevel;
     public int CurrentLevelId => currentLevelId;
-    public int GoodDucksClicked => goodDucksClicked;
-    public int GoodDucksRequired => currentLevel?.goodDucks ?? 0;
+    public int GeeseClicked => geeseClicked;
+    public int GeeseRequired => currentLevel?.geese ?? 0;
     public int TotalGoodDucksSpawned => totalGoodDucksSpawned;
     public int MaxTotalSpawns => currentLevel?.maxTotalSpawns ?? 10;
-    public float LevelProgress => currentLevel != null ? (float)goodDucksClicked / currentLevel.goodDucks : 0f;
+    public float LevelProgress => currentLevel != null ? (float)geeseClicked / currentLevel.goodDucks : 0f;
     
     #endregion
     

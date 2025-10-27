@@ -2,7 +2,7 @@
   "levelId": 10,
   "levelName": "Expert Entry",
   "goodDucks": 19,
-  "decoyDucks": 8,
+  "geese": 8,
   "maxTotalSpawns": 30,
   "timeLimit": 40,
   "spawnRate": 1.1,

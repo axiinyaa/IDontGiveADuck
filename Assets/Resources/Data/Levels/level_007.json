@@ -2,7 +2,7 @@
   "levelId": 7,
   "levelName": "The Jump",
   "goodDucks": 13,
-  "decoyDucks": 5,
+  "geese": 5,
   "maxTotalSpawns": 21,
   "timeLimit": 30,
   "spawnRate": 1.4,

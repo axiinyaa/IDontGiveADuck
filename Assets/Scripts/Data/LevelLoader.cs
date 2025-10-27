@@ -118,7 +118,7 @@ public class LevelLoader : MonoBehaviour
             levelId = levelId,
             levelName = $"Default Level {levelId}",
             goodDucks = 3,           // Number of good ducks to click
-            decoyDucks = 1,          // Number of decoy ducks to avoid
+            geese = 1,          // Number of decoy ducks to avoid
             timeLimit = 30f,         // Time limit in seconds
             spawnRate = 3.0f,        // How often ducks spawn
             duckLifetime = 5.0f,     // How long ducks stay on screen

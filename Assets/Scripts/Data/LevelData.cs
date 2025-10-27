@@ -6,7 +6,7 @@ public class LevelData
     public int levelId;
     public string levelName;
     public int goodDucks;
-    public int decoyDucks;
+    public int geese;
     public float timeLimit;
     public float spawnRate;
     public float duckLifetime;

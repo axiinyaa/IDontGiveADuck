@@ -2,7 +2,7 @@
   "levelId": 8,
   "levelName": "Duck Hunt",
   "goodDucks": 15,
-  "decoyDucks": 6,
+  "geese": 6,
   "maxTotalSpawns": 24,
   "timeLimit": 35,
   "spawnRate": 1.3,

@@ -1,8 +1,8 @@
 {
   "levelId": 5,
   "levelName": "Pattern Practice",
-  "goodDucks": 9,
-  "decoyDucks": 3,
+  "goodDucks": 5,
+  "geese": 9,
   "maxTotalSpawns": 15,
   "timeLimit": 25,
   "spawnRate": 1.8,

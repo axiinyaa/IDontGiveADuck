@@ -1,8 +1,8 @@
 {
   "levelId": 1,
   "levelName": "First Steps",
-  "goodDucks": 3,
-  "decoyDucks": 0,
+  "goodDucks": 1,
+  "geese": 3,
   "maxTotalSpawns": 5,
   "timeLimit": 25,
   "spawnRate": 3.0,

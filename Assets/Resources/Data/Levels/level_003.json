@@ -2,7 +2,7 @@
   "levelId": 3,
   "levelName": "Building Skills",
   "goodDucks": 5,
-  "decoyDucks": 1,
+  "geese": 5,
   "maxTotalSpawns": 9,
   "timeLimit": 25,
   "spawnRate": 2.2,

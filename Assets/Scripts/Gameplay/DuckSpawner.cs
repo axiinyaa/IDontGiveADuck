@@ -27,7 +27,7 @@ public class DuckSpawner : MonoBehaviour
     // Defines where ducks can appear in the game world
     
     [Header("Spawn Area")]
-    [SerializeField] private BoxCollider2D spawnArea;  // The area where ducks can spawn
+    [SerializeField] private Collider2D spawnArea;  // The area where ducks can spawn
     [SerializeField] private float spawnPadding = 1f;  // Distance from spawn area edges (prevents ducks spawning too close to borders)
     
     // ===== DEBUG SETTINGS =====
@@ -65,12 +65,6 @@ public class DuckSpawner : MonoBehaviour
     /// </summary>
     void Awake()
     {
-        // If no spawn area assigned, create one automatically
-        if (spawnArea == null)
-        {
-            SetupDefaultSpawnArea();
-        }
-        
         // Check that all required prefabs are properly configured
         ValidatePrefabs();
     }
@@ -92,41 +86,6 @@ public class DuckSpawner : MonoBehaviour
     #endregion
     
     #region Setup and Validation
-    // These methods ensure the spawner is properly configured
-    
-    /// <summary>
-    /// Creates a default spawn area if none is assigned
-    /// This ensures the spawner always has a valid area to work with
-    /// </summary>
-    private void SetupDefaultSpawnArea()
-    {
-        // Create a new GameObject to hold the spawn area
-        GameObject spawnAreaObj = new GameObject("SpawnArea");
-        spawnAreaObj.transform.SetParent(transform);  // Make it a child of this spawner
-        
-        // Add a BoxCollider2D component to define the spawn area
-        spawnArea = spawnAreaObj.AddComponent<BoxCollider2D>();
-        spawnArea.isTrigger = true;  // Make it a trigger (doesn't block physics)
-        
-        // Set size based on camera bounds to cover most of the screen
-        Camera cam = Camera.main;
-        if (cam != null)
-        {
-            // Calculate screen dimensions in world units
-            float height = 2f * cam.orthographicSize;  // Height of camera view
-            float width = height * cam.aspect;          // Width based on aspect ratio
-            
-            // Make spawn area 80% of screen size (leaves some margin)
-            spawnArea.size = new Vector2(width * 0.8f, height * 0.8f);
-        }
-        else
-        {
-            // Fallback size if no camera found
-            spawnArea.size = new Vector2(10f, 6f);
-        }
-        
-        Debug.Log("Created default spawn area");
-    }
     
     /// <summary>
     /// Validates that all required prefabs are properly configured
@@ -149,7 +108,7 @@ public class DuckSpawner : MonoBehaviour
         // Validate that each prefab has the correct component
         for (int i = 0; i < goodDuckPrefabs.Length; i++)
         {
-            if (goodDuckPrefabs[i] != null && goodDuckPrefabs[i].GetComponent<GoodDuck>() == null)
+            if (goodDuckPrefabs[i] != null && goodDuckPrefabs[i].GetComponent<Duck>() == null)
             {
                 Debug.LogError($"Good duck prefab {i} is missing GoodDuck component");
             }
@@ -157,7 +116,7 @@ public class DuckSpawner : MonoBehaviour
         
         for (int i = 0; i < decoyDuckPrefabs.Length; i++)
         {
-            if (decoyDuckPrefabs[i] != null && decoyDuckPrefabs[i].GetComponent<DecoyDuck>() == null)
+            if (decoyDuckPrefabs[i] != null && decoyDuckPrefabs[i].GetComponent<Goose>() == null)
             {
                 Debug.LogError($"Decoy duck prefab {i} is missing DecoyDuck component");
             }
@@ -184,8 +143,8 @@ public class DuckSpawner : MonoBehaviour
         // Store the level configuration for use during spawning
         currentLevel = levelData;
         goodDucksRemaining = levelData.goodDucks;      // Set how many good ducks to spawn
-        decoyDucksRemaining = levelData.decoyDucks;    // Set how many decoy ducks to spawn
-        
+        decoyDucksRemaining = levelData.geese;    // Set how many decoy ducks to spawn
+
         isSpawning = true;  // Enable spawning flag
         
         // Clear any existing ducks from previous levels
@@ -199,7 +158,7 @@ public class DuckSpawner : MonoBehaviour
         
         spawnCoroutine = StartCoroutine(SpawnDucksCoroutine());
         
-        Debug.Log($"Started spawning for level {levelData.levelId}: {levelData.goodDucks} good, {levelData.decoyDucks} decoys, maxTotalSpawns: {levelData.maxTotalSpawns}, continueSpawning: {levelData.continueSpawning}");
+        Debug.Log($"Started spawning for level {levelData.levelId}: {levelData.goodDucks} good, {levelData.geese} decoys, maxTotalSpawns: {levelData.maxTotalSpawns}, continueSpawning: {levelData.continueSpawning}");
     }
     
     /// <summary>
@@ -253,6 +212,7 @@ public class DuckSpawner : MonoBehaviour
     /// </summary>
     private IEnumerator SpawnDucksCoroutine()
     {
+        Debug.Log("holy shit fucks i mean duck");
         // Keep spawning until told to stop
         while (isSpawning)
         {
@@ -260,14 +220,14 @@ public class DuckSpawner : MonoBehaviour
             if (GameManager.Instance != null)
             {
                 // WIN: Player got required good ducks
-                if (GameManager.Instance.GoodDucksClicked >= currentLevel.goodDucks)
+                if (GameManager.Instance.GeeseClicked >= currentLevel.geese)
                 {
                     Debug.Log("WIN: Player got required good ducks");
                     break;  // Exit the coroutine
                 }
                 
                 // LOSE: Only when time runs out
-                if (GameManager.Instance.TimeLeft <= 0)
+                if (GameManager.Instance.Lives <= 0)
                 {
                     Debug.Log("LOSE: Time ran out");
                     break;  // Exit the coroutine
@@ -280,27 +240,13 @@ public class DuckSpawner : MonoBehaviour
             
             // Decide what type of duck to spawn (good or decoy)
             bool spawnGoodDuck = ShouldSpawnGoodDuck();
-            
-            if (spawnGoodDuck)
-            {
-                // Check if we can spawn more good ducks (respect maxTotalSpawns limit)
-                if (GameManager.Instance != null && GameManager.Instance.TotalGoodDucksSpawned < currentLevel.maxTotalSpawns)
-                {
-                    SpawnGoodDuck();
-                }
-                else if (decoyDucksRemaining > 0)
-                {
-                    // Spawn decoy if we can't spawn more good ducks
-                    SpawnDecoyDuck();
-                }
-            }
-            else if (decoyDucksRemaining > 0)
+
+            if (!spawnGoodDuck && decoyDucksRemaining > 0)
             {
                 SpawnDecoyDuck();
             }
-            else if (GameManager.Instance != null && GameManager.Instance.TotalGoodDucksSpawned < currentLevel.maxTotalSpawns)
+            else if (goodDucksRemaining >= 0)
             {
-                // Force spawn good duck if no decoys left
                 SpawnGoodDuck();
             }
         }
@@ -314,25 +260,9 @@ public class DuckSpawner : MonoBehaviour
     /// </summary>
     private bool ShouldSpawnGoodDuck()
     {
-        // Check if we can spawn more good ducks (respect the maximum limit)
-        if (GameManager.Instance != null && GameManager.Instance.TotalGoodDucksSpawned >= currentLevel.maxTotalSpawns)
-        {
-            return false; // Can't spawn more good ducks
-        }
+        if (goodDucksRemaining <= 0) return false;
         
-        // If no decoys left, always spawn good ducks
-        if (decoyDucksRemaining <= 0) return true;
-        
-        // Calculate spawn probability based on remaining decoys and good duck spawns
-        // This creates a balanced mix of duck types
-        float totalRemaining = decoyDucksRemaining + 1; // +1 for potential good duck
-        float goodDuckProbability = 1f / totalRemaining;
-        
-        // Add some randomness to avoid predictable patterns
-        goodDuckProbability += Random.Range(-0.1f, 0.1f);
-        goodDuckProbability = Mathf.Clamp01(goodDuckProbability);  // Keep between 0 and 1
-        
-        return Random.value < goodDuckProbability;
+        return Random.value < 0.5f;
     }
     
     /// <summary>
@@ -351,11 +281,13 @@ public class DuckSpawner : MonoBehaviour
         GameObject duck = Instantiate(prefab, spawnPosition, Quaternion.identity);
         
         // Configure the duck with level-specific properties
-        GoodDuck goodDuck = duck.GetComponent<GoodDuck>();
+        Duck goodDuck = duck.GetComponent<Duck>();
         if (goodDuck != null)
         {
             goodDuck.Initialize(currentLevel.duckLifetime);
         }
+
+        goodDucksRemaining--;
         
         // Add to our list of active ducks for tracking
         activeDucks.Add(duck);
@@ -386,7 +318,7 @@ public class DuckSpawner : MonoBehaviour
         GameObject duck = Instantiate(prefab, spawnPosition, Quaternion.identity);
         
         // Configure the duck with level-specific properties
-        DecoyDuck decoyDuck = duck.GetComponent<DecoyDuck>();
+        Goose decoyDuck = duck.GetComponent<Goose>();
         if (decoyDuck != null)
         {
             decoyDuck.Initialize(currentLevel.duckLifetime);
@@ -470,31 +402,39 @@ public class DuckSpawner : MonoBehaviour
     /// Get a random position within the spawn area
     /// This ensures ducks appear in valid locations
     /// </summary>
-    private Vector3 GetRandomSpawnPosition()
+    public Vector2 GetRandomSpawnPosition()
     {
         if (spawnArea == null)
         {
             Debug.LogWarning("No spawn area defined, using origin");
             return Vector3.zero;
         }
-        
+
         // Get the bounds of the spawn area
         Bounds bounds = spawnArea.bounds;
-        
-        // Generate random X coordinate within bounds (with padding)
-        float x = Random.Range(
-            bounds.min.x + spawnPadding,  // Left edge + padding
-            bounds.max.x - spawnPadding   // Right edge - padding
-        );
-        
-        // Generate random Y coordinate within bounds (with padding)
-        float y = Random.Range(
-            bounds.min.y + spawnPadding,  // Bottom edge + padding
-            bounds.max.y - spawnPadding   // Top edge - padding
-        );
-        
-        // Return the random position (Z = 0 for 2D games)
-        return new Vector3(x, y, 0);
+
+        float x, y;
+
+        while (true)
+        {
+            // Generate random X coordinate within bounds (with padding)
+            x = Random.Range(
+                bounds.min.x + spawnPadding,  // Left edge + padding
+                bounds.max.x - spawnPadding   // Right edge - padding
+            );
+
+            // Generate random Y coordinate within bounds (with padding)
+            y = Random.Range(
+                bounds.min.y + spawnPadding,  // Bottom edge + padding
+                bounds.max.y - spawnPadding   // Top edge - padding
+            );
+
+            Vector2 pos = new Vector2(x, y);
+
+            if (!bounds.Contains(pos)) continue;
+
+            return pos;
+        }
     }
     
     #endregion
@@ -509,7 +449,6 @@ public class DuckSpawner : MonoBehaviour
     void OnDestroy()
     {
         StopSpawning();
-        ClearActiveDucks();
     }
     
     #endregion
