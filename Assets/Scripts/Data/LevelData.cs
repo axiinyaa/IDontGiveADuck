@@ -1,35 +1,54 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-[System.Serializable]
-public class LevelData
+[CreateAssetMenu(fileName = "NewLevel", menuName = "ScriptableObject/New Level")]
+public class Level : ScriptableObject
 {
-    public int levelId;
-    public string levelName;
-    public int goodDucks;
-    public int geese;
-    public float timeLimit;
-    public float spawnRate;
-    public float duckLifetime;
-    public int decoyPenalty;
-    
-    // New fields for continuous spawning logic
-    public int maxTotalSpawns = 10;  // Maximum total good ducks that can spawn
-    public bool continueSpawning = true;  // Whether to continue spawning after initial good ducks
-    
-    [System.Serializable]
-    public class SizeDistribution
+    public enum SpawnOrder { Normal, Random }
+
+    [Header("Level Settings")]
+    public string LevelName = "Level";
+    public AudioClip Music;
+
+    [Header("Prefabs to Spawn")]
+    public GameObject[] DucksToSpawn;
+    public GameObject[] GeeseToSpawn;
+
+    [Header("Spawn Settings")]
+    public float SecondsBeforeSpawn = 3;
+    public SpawnOrder Order = SpawnOrder.Normal;
+
+    private int selectionIndex = 0;
+    private List<GameObject> ducksAllowedToSpawn = new();
+    private List<GameObject> geeseAllowedToSpawn = new();
+
+    public void PrepareLevel()
     {
-        public float large;
-        public float medium;
-        public float small;
+        ducksAllowedToSpawn.Clear();
+        geeseAllowedToSpawn.Clear();
+
+        ducksAllowedToSpawn = DucksToSpawn.ToList();
+        geeseAllowedToSpawn = GeeseToSpawn.ToList();
     }
-    
-    public SizeDistribution sizeDistribution;
-    public string[] specialMechanics;
-    public string backgroundMusic;
-    public string difficulty;
-    public string designNotes;
-    public float targetSuccessRate;
-    public string learningObjective;
-    public bool powerUpsAvailable;
+
+    public GameObject PickNextDuck()
+    {
+        if (Order == SpawnOrder.Random) selectionIndex = UnityEngine.Random.Range(0, ducksAllowedToSpawn.Count);
+
+        GameObject selected = ducksAllowedToSpawn[selectionIndex];
+        ducksAllowedToSpawn.RemoveAt(selectionIndex);
+
+        return selected;
+    }
+
+    public GameObject PickNextGoose()
+    {
+        if (Order == SpawnOrder.Random) selectionIndex = UnityEngine.Random.Range(0, geeseAllowedToSpawn.Count);
+
+        GameObject selected = geeseAllowedToSpawn[selectionIndex];
+        geeseAllowedToSpawn.RemoveAt(selectionIndex);
+
+        return selected;
+    }
 }

@@ -168,10 +168,10 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Updates level information when a new level is loaded
     /// </summary>
-    public void UpdateLevelInfo(LevelData levelData)
+    public void UpdateLevelInfo()
     {
         if (levelText != null)
-            levelText.text = $"Level: {levelData.levelId}";
+            levelText.text = $"Level: {GameManager.Instance.currentLevel}";
         
         UpdateProgress();
     }
@@ -320,14 +320,12 @@ public class UIManager : MonoBehaviour
             // Show/hide next level button based on whether there is a next level
             if (nextLevelButton != null)
             {
-                // Check if there's a next level available
-                int nextLevel = LevelLoader.Instance?.GetNextLevelId(GameManager.Instance.CurrentLevelId) ?? -1;
-                nextLevelButton.gameObject.SetActive(nextLevel > 0);
+                nextLevelButton.gameObject.SetActive(GameManager.Instance.currentLevel < LevelLoader.Instance.levels.Length);
 
                 // Update button text to show which level is next
                 var tmpText = nextLevelButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
                 if (tmpText != null)
-                    tmpText.text = nextLevel > 0 ? $"Next Level ({nextLevel})" : "Next Level";
+                    tmpText.text = GameManager.Instance.currentLevel + 1 > 0 ? $"Next Level ({GameManager.Instance.currentLevel + 1})" : "Next Level";
             }
         }
     }
@@ -495,16 +493,6 @@ public class UIManager : MonoBehaviour
     void OnGUI()
     {
         if (!showDebugInfo || GameManager.Instance == null) return;
-        
-        // Create a debug panel in the top-right corner of the screen
-        GUILayout.BeginArea(new Rect(Screen.width - 200, 10, 190, 180));
-        GUILayout.Label("=== DEBUG INFO ===");
-        GUILayout.Label($"State: {GameManager.Instance.CurrentState}");
-        GUILayout.Label($"Level: {GameManager.Instance.CurrentLevelId}");
-        GUILayout.Label($"Ducks: {GameManager.Instance.GeeseClicked}/{GameManager.Instance.GeeseRequired}");
-        GUILayout.Label($"Spawns: {GameManager.Instance.TotalGoodDucksSpawned}/{GameManager.Instance.MaxTotalSpawns}");
-        GUILayout.Label($"Time: {GameManager.Instance.TimeLeft:F1}s");
-        GUILayout.Label($"Lives: {GameManager.Instance.Lives}");
         
         // Find and display active duck count
         DuckSpawner spawner = FindFirstObjectByType<DuckSpawner>();

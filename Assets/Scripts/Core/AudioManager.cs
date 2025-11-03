@@ -235,57 +235,24 @@ public class AudioManager : MonoBehaviour
     /// Reads the backgroundMusic field from level data
     /// and switches to appropriate music for that level type
     /// </summary>
-    private void OnLevelLoaded(LevelData levelData)
+    private void OnLevelLoaded()
     {
+        Level level = LevelLoader.GetCurrentLevel();
+
         // Don't change music if we're still in the menu
         if (GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.Menu)
         {
             return;
         }
-        
-        if (levelData != null && !string.IsNullOrEmpty(levelData.backgroundMusic))
+
+        if (level.Music != null)
         {
-            AudioClip levelMusic = GetLevelMusic(levelData.backgroundMusic);
-            if (levelMusic != null)
-            {
-                PlayMusic(levelMusic);
-            }
-            else
-            {
-                // Fallback to tutorial theme if music not found
-                PlayMusic(tutorialTheme);
-            }
+            PlayMusic(level.Music);
         }
         else
         {
-            // Default to tutorial theme if no music specified
+            // Fallback to tutorial theme if music not found
             PlayMusic(tutorialTheme);
-        }
-    }
-    
-    /// <summary>
-    /// Converts music name strings to actual AudioClip objects
-    /// 
-    /// This allows level designers to specify music by name
-    /// rather than having to reference AudioClip objects directly
-    /// </summary>
-    private AudioClip GetLevelMusic(string musicName)
-    {
-        if (string.IsNullOrEmpty(musicName))
-            return null;
-            
-        switch (musicName.ToLower())
-        {
-            case "tutorial_theme":
-                return tutorialTheme;
-            case "action_theme":
-                return actionTheme;
-            case "challenge_theme":
-                return challengeTheme;
-            case "boss_theme":
-                return bossTheme;
-            default:
-                return null;
         }
     }
     

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 251516885786172104}
   - component: {fileID: 5094551415460283529}
   - component: {fileID: 6908825711674646287}
-  - component: {fileID: 2481365270575065863}
+  - component: {fileID: -6366035645447456121}
   m_Layer: 6
   m_Name: DecoyDuck_L
   m_TagString: Clickable
@@ -120,7 +120,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -165,7 +165,7 @@ MonoBehaviour:
   penaltyTextPrefab: {fileID: 0}
   spriteRenderer: {fileID: 251516885786172104}
   subtleVisualDifference: 1
---- !u!50 &2481365270575065863
+--- !u!50 &-6366035645447456121
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -187,8 +187,8 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 64
-  m_Interpolate: 1
+    m_Bits: 0
+  m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 0

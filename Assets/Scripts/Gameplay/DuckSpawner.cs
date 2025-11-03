@@ -15,20 +15,12 @@ using System.Collections.Generic;
 /// </summary>
 public class DuckSpawner : MonoBehaviour
 {
-    // ===== DUCK PREFABS =====
-    // These arrays store the different duck prefabs that can be spawned
-    // Each array has exactly 3 elements: Large, Medium, and Small ducks
-    
-    [Header("Duck Prefabs")]
-    [SerializeField] private GameObject[] goodDuckPrefabs; // [0]=Large, [1]=Medium, [2]=Small
-    [SerializeField] private GameObject[] decoyDuckPrefabs; // [0]=Large, [1]=Medium, [2]=Small
-    
     // ===== SPAWN AREA CONFIGURATION =====
     // Defines where ducks can appear in the game world
     
     [Header("Spawn Area")]
     [SerializeField] private Collider2D spawnArea;  // The area where ducks can spawn
-    [SerializeField] private float spawnPadding = 1f;  // Distance from spawn area edges (prevents ducks spawning too close to borders)
+    [SerializeField] private float spawnPadding = 0f;  // Distance from spawn area edges (prevents ducks spawning too close to borders)
     
     // ===== DEBUG SETTINGS =====
     // These help during development by visualising spawn areas
@@ -41,14 +33,14 @@ public class DuckSpawner : MonoBehaviour
     // These variables track the current state of the spawning system
     
     // Current level configuration - contains all spawn settings
-    private LevelData currentLevel;
+    private Level currentLevel;
     private bool isSpawning = false;  // Flag to control if spawning is active
     
     // ===== SPAWN TRACKING =====
     // Keep track of how many ducks are left to spawn and currently active
     
     private int goodDucksRemaining = 0;      // How many good ducks still need to be spawned
-    private int decoyDucksRemaining = 0;     // How many decoy ducks still need to be spawned
+    private int geeseRemaining = 0;     // How many decoy ducks still need to be spawned
     private List<GameObject> activeDucks = new List<GameObject>();  // All ducks currently in the scene
     
     // ===== COROUTINE MANAGEMENT =====
@@ -58,16 +50,7 @@ public class DuckSpawner : MonoBehaviour
     
     #region Unity Lifecycle
     // Unity automatically calls these methods at specific times during the game's lifecycle
-    
-    /// <summary>
-    /// Called when the script instance is being loaded
-    /// This happens before Start() and is used for initialisation
-    /// </summary>
-    void Awake()
-    {
-        // Check that all required prefabs are properly configured
-        ValidatePrefabs();
-    }
+
     
     /// <summary>
     /// Called by Unity's Gizmo system to draw debug information in the Scene view
@@ -87,42 +70,6 @@ public class DuckSpawner : MonoBehaviour
     
     #region Setup and Validation
     
-    /// <summary>
-    /// Validates that all required prefabs are properly configured
-    /// This prevents runtime errors by catching configuration issues early
-    /// </summary>
-    private void ValidatePrefabs()
-    {
-        // Check good duck prefabs array
-        if (goodDuckPrefabs == null || goodDuckPrefabs.Length < 3)
-        {
-            Debug.LogError("DuckSpawner: Good duck prefabs array must have 3 elements [Large, Medium, Small]");
-        }
-        
-        // Check decoy duck prefabs array
-        if (decoyDuckPrefabs == null || decoyDuckPrefabs.Length < 3)
-        {
-            Debug.LogError("DuckSpawner: Decoy duck prefabs array must have 3 elements [Large, Medium, Small]");
-        }
-        
-        // Validate that each prefab has the correct component
-        for (int i = 0; i < goodDuckPrefabs.Length; i++)
-        {
-            if (goodDuckPrefabs[i] != null && goodDuckPrefabs[i].GetComponent<Duck>() == null)
-            {
-                Debug.LogError($"Good duck prefab {i} is missing GoodDuck component");
-            }
-        }
-        
-        for (int i = 0; i < decoyDuckPrefabs.Length; i++)
-        {
-            if (decoyDuckPrefabs[i] != null && decoyDuckPrefabs[i].GetComponent<Goose>() == null)
-            {
-                Debug.LogError($"Decoy duck prefab {i} is missing DecoyDuck component");
-            }
-        }
-    }
-    
     #endregion
     
     #region Public Interface
@@ -132,18 +79,20 @@ public class DuckSpawner : MonoBehaviour
     /// Start spawning ducks for the given level
     /// This is the main entry point for beginning a level's duck spawning
     /// </summary>
-    public void StartSpawning(LevelData levelData)
+    public void StartSpawning()
     {
-        if (levelData == null)
+        Level level = LevelLoader.GetCurrentLevel();
+
+        if (level == null)
         {
             Debug.LogError("Cannot start spawning - level data is null");
             return;
         }
         
         // Store the level configuration for use during spawning
-        currentLevel = levelData;
-        goodDucksRemaining = levelData.goodDucks;      // Set how many good ducks to spawn
-        decoyDucksRemaining = levelData.geese;    // Set how many decoy ducks to spawn
+        currentLevel = level;
+        goodDucksRemaining = level.DucksToSpawn.Length;      // Set how many good ducks to spawn
+        geeseRemaining = level.GeeseToSpawn.Length;    // Set how many decoy ducks to spawn
 
         isSpawning = true;  // Enable spawning flag
         
@@ -157,8 +106,6 @@ public class DuckSpawner : MonoBehaviour
         }
         
         spawnCoroutine = StartCoroutine(SpawnDucksCoroutine());
-        
-        Debug.Log($"Started spawning for level {levelData.levelId}: {levelData.goodDucks} good, {levelData.geese} decoys, maxTotalSpawns: {levelData.maxTotalSpawns}, continueSpawning: {levelData.continueSpawning}");
     }
     
     /// <summary>
@@ -220,7 +167,7 @@ public class DuckSpawner : MonoBehaviour
             if (GameManager.Instance != null)
             {
                 // WIN: Player got required good ducks
-                if (GameManager.Instance.GeeseClicked >= currentLevel.geese)
+                if (GameManager.Instance.GeeseClicked >= currentLevel.GeeseToSpawn.Length)
                 {
                     Debug.Log("WIN: Player got required good ducks");
                     break;  // Exit the coroutine
@@ -236,12 +183,12 @@ public class DuckSpawner : MonoBehaviour
             
             // Wait for the spawn interval before spawning the next duck
             // This creates the timing for duck spawning
-            yield return new WaitForSeconds(currentLevel.spawnRate);
+            yield return new WaitForSeconds(currentLevel.SecondsBeforeSpawn);
             
             // Decide what type of duck to spawn (good or decoy)
             bool spawnGoodDuck = ShouldSpawnGoodDuck();
 
-            if (!spawnGoodDuck && decoyDucksRemaining > 0)
+            if (!spawnGoodDuck && geeseRemaining > 0)
             {
                 SpawnDecoyDuck();
             }
@@ -251,7 +198,6 @@ public class DuckSpawner : MonoBehaviour
             }
         }
         
-        Debug.Log($"Spawning completed - Total good ducks spawned: {GameManager.Instance?.TotalGoodDucksSpawned ?? 0}");
     }
     
     /// <summary>
@@ -271,21 +217,19 @@ public class DuckSpawner : MonoBehaviour
     private void SpawnGoodDuck()
     {
         // Select which size of good duck to spawn
-        GameObject prefab = SelectGoodDuckPrefab();
+        GameObject prefab = currentLevel.PickNextDuck();
         if (prefab == null) return;
         
         // Get a random position within the spawn area
-        Vector3 spawnPosition = GetRandomSpawnPosition();
+        Vector2 spawnPosition = GetRandomSpawnPosition();
         
         // Create the duck GameObject at the spawn position
         GameObject duck = Instantiate(prefab, spawnPosition, Quaternion.identity);
         
         // Configure the duck with level-specific properties
         Duck goodDuck = duck.GetComponent<Duck>();
-        if (goodDuck != null)
-        {
-            goodDuck.Initialize(currentLevel.duckLifetime);
-        }
+
+        goodDuck.Initialize();
 
         goodDucksRemaining--;
         
@@ -298,8 +242,6 @@ public class DuckSpawner : MonoBehaviour
             GameManager.Instance.OnDuckSpawned();
             GameManager.Instance.OnGoodDuckSpawned();
         }
-        
-        Debug.Log($"Spawned good duck. Total spawned: {GameManager.Instance?.TotalGoodDucksSpawned ?? 0}");
     }
     
     /// <summary>
@@ -308,7 +250,7 @@ public class DuckSpawner : MonoBehaviour
     private void SpawnDecoyDuck()
     {
         // Select which size of decoy duck to spawn
-        GameObject prefab = SelectDecoyDuckPrefab();
+        GameObject prefab = currentLevel.PickNextGoose();
         if (prefab == null) return;
         
         // Get a random position within the spawn area
@@ -317,16 +259,9 @@ public class DuckSpawner : MonoBehaviour
         // Create the duck GameObject at the spawn position
         GameObject duck = Instantiate(prefab, spawnPosition, Quaternion.identity);
         
-        // Configure the duck with level-specific properties
-        Goose decoyDuck = duck.GetComponent<Goose>();
-        if (decoyDuck != null)
-        {
-            decoyDuck.Initialize(currentLevel.duckLifetime);
-        }
-        
         // Add to our list of active ducks for tracking
         activeDucks.Add(duck);
-        decoyDucksRemaining--;  // Decrease the count of remaining decoys
+        geeseRemaining--;  // Decrease the count of remaining decoys
         
         // Notify the game manager about the spawn
         if (GameManager.Instance != null)
@@ -334,63 +269,7 @@ public class DuckSpawner : MonoBehaviour
             GameManager.Instance.OnDuckSpawned();
         }
         
-        Debug.Log($"Spawned decoy duck. Remaining: {decoyDucksRemaining}");
-    }
-    
-    #endregion
-    
-    #region Prefab Selection
-    // These methods choose which size of duck to spawn based on level configuration
-    
-    /// <summary>
-    /// Select a good duck prefab based on size distribution from level data
-    /// This creates variety in duck sizes according to the level's design
-    /// </summary>
-    private GameObject SelectGoodDuckPrefab()
-    {
-        if (goodDuckPrefabs == null || goodDuckPrefabs.Length < 3)
-        {
-            Debug.LogError("Good duck prefabs not properly configured");
-            return null;
-        }
-        
-        // Generate a random number between 0 and 1
-        float rand = Random.value;
-        LevelData.SizeDistribution dist = currentLevel.sizeDistribution;
-        
-        // Use the size distribution to determine which duck to spawn
-        // This creates the mix of large, medium, and small ducks
-        if (rand < dist.large)
-            return goodDuckPrefabs[0]; // Large duck
-        else if (rand < dist.large + dist.medium)
-            return goodDuckPrefabs[1]; // Medium duck
-        else
-            return goodDuckPrefabs[2]; // Small duck
-    }
-    
-    /// <summary>
-    /// Select a decoy duck prefab based on size distribution from level data
-    /// Uses the same logic as good ducks for consistency
-    /// </summary>
-    private GameObject SelectDecoyDuckPrefab()
-    {
-        if (decoyDuckPrefabs == null || decoyDuckPrefabs.Length < 3)
-        {
-            Debug.LogError("Decoy duck prefabs not properly configured");
-            return null;
-        }
-        
-        // Generate a random number between 0 and 1
-        float rand = Random.value;
-        LevelData.SizeDistribution dist = currentLevel.sizeDistribution;
-        
-        // Use the same size distribution logic as good ducks
-        if (rand < dist.large)
-            return decoyDuckPrefabs[0]; // Large duck
-        else if (rand < dist.large + dist.medium)
-            return decoyDuckPrefabs[1]; // Medium duck
-        else
-            return decoyDuckPrefabs[2]; // Small duck
+        Debug.Log($"Spawned decoy duck. Remaining: {geeseRemaining}");
     }
     
     #endregion
@@ -404,11 +283,6 @@ public class DuckSpawner : MonoBehaviour
     /// </summary>
     public Vector2 GetRandomSpawnPosition()
     {
-        if (spawnArea == null)
-        {
-            Debug.LogWarning("No spawn area defined, using origin");
-            return Vector3.zero;
-        }
 
         // Get the bounds of the spawn area
         Bounds bounds = spawnArea.bounds;
@@ -418,20 +292,10 @@ public class DuckSpawner : MonoBehaviour
         while (true)
         {
             // Generate random X coordinate within bounds (with padding)
-            x = Random.Range(
-                bounds.min.x + spawnPadding,  // Left edge + padding
-                bounds.max.x - spawnPadding   // Right edge - padding
-            );
+            x = Random.Range(bounds.min.x, bounds.max.x);
+            y = Random.Range(bounds.min.y, bounds.max.y);
 
-            // Generate random Y coordinate within bounds (with padding)
-            y = Random.Range(
-                bounds.min.y + spawnPadding,  // Bottom edge + padding
-                bounds.max.y - spawnPadding   // Top edge - padding
-            );
-
-            Vector2 pos = new Vector2(x, y);
-
-            if (!bounds.Contains(pos)) continue;
+            Vector2 pos = transform.TransformPoint(new Vector2(x, y));
 
             return pos;
         }
@@ -469,7 +333,7 @@ public class DuckSpawner : MonoBehaviour
     /// <summary>
     /// How many decoy ducks are left to spawn
     /// </summary>
-    public int DecoyDucksRemaining => decoyDucksRemaining;
+    public int DecoyDucksRemaining => geeseRemaining;
     
     /// <summary>
     /// How many ducks are currently active in the scene
@@ -479,7 +343,7 @@ public class DuckSpawner : MonoBehaviour
     /// <summary>
     /// The current level configuration being used for spawning
     /// </summary>
-    public LevelData CurrentLevel => currentLevel;
+    public Level CurrentLevel => currentLevel;
     
     #endregion
 }

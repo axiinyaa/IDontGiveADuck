@@ -32,16 +32,17 @@ public abstract class BaseCharacter : MonoBehaviour
     // Public properties for external access
     public int PointValue => pointValue;
     public bool IsClicked => isClicked;
+
+    [Header("Animations")]
+    [SerializeField] SpriteAnimation idleAnimation;
+    [SerializeField] SpriteAnimation flyAnimation;
+    [SerializeField] SpriteAnimation scareAnimation;
     
     #region Unity Lifecycle
     
     protected virtual void Start()
     {
         Initialize();
-
-        startingPosition = transform.position;
-        targetPosition = transform.position;
-        transform.position = new Vector3(startingPosition.x, startingPosition.y + 30f, -1);
 
         body = GetComponent<Rigidbody2D>();
         collision = GetComponent<Collider2D>();
@@ -61,25 +62,33 @@ public abstract class BaseCharacter : MonoBehaviour
         // This prevents errors during the brief moment between object creation and initialization
         if (!isInitialized) return;
 
-        if (Vector2.Distance(transform.position, startingPosition) > 2f && !finishedLanding)
+        if (Vector2.Distance(transform.position, startingPosition) > 0.5f && !finishedLanding)
         {
             transform.position = Vector2.Lerp(transform.position, startingPosition, Time.deltaTime);
+            if (flyAnimation != null) flyAnimation.Play();
         }
         else
         {
             finishedLanding = true;
+            
+            if (flyAnimation != null) flyAnimation.Stop();
+            if (idleAnimation != null) idleAnimation.Play();
         }
     }
-    
+
     protected virtual void FixedUpdate()
     {
-        // Handle duck movement (if any)
-        // Currently not implemented but ready for future moving ducks
+        if (!finishedLanding) return;
+
         HandleMovement();
     }
-    
-    // Keep OnMouseDown as backup for older Unity versions
-    protected virtual void OnMouseDown()
+
+    void OnMouseOver()
+    {
+        Debug.Log("Mouse Over");
+    }
+
+    void OnMouseDown()
     {
         if (!isClicked && isInitialized)
         {
@@ -165,6 +174,10 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         // Default implementation - can be overridden
         Debug.Log($"{GetType().Name} spawned at position {transform.position} with {currentLifetime}s lifetime");
+
+        startingPosition = transform.position;
+        targetPosition = transform.position;
+        transform.position = new Vector3(startingPosition.x, startingPosition.y + 30f, -1);
     }
     
     /// <summary>

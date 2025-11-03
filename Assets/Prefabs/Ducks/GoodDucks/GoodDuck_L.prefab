@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1339619373891858794}
   - component: {fileID: 5640780115888115071}
   - component: {fileID: 4603626279781314114}
-  - component: {fileID: 7124120556650901901}
+  - component: {fileID: 2058004650654427857}
   m_Layer: 7
   m_Name: GoodDuck_L
   m_TagString: Clickable
@@ -120,7 +120,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -162,7 +162,7 @@ MonoBehaviour:
   successParticles: {fileID: 0}
   successTextPrefab: {fileID: 0}
   spriteRenderer: {fileID: 1339619373891858794}
---- !u!50 &7124120556650901901
+--- !u!50 &2058004650654427857
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -181,11 +181,11 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 16
+    m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 231
-  m_Interpolate: 1
+    m_Bits: 0
+  m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 0

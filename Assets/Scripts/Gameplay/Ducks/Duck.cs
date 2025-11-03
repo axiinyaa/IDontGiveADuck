@@ -8,10 +8,11 @@ public class Duck : BaseCharacter
     [Header("Good Duck Settings")]
     [SerializeField] private ParticleSystem successParticles;
     [SerializeField] private GameObject successTextPrefab; // Optional floating text
-    
+
     [Header("Visual Feedback")]
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    private Goose closestGoose;
 
     protected override void Start()
     {
@@ -78,11 +79,10 @@ public class Duck : BaseCharacter
         }
         else
         {
-            Goose closestGoose = FindClosestGoose();
-
             if (closestGoose == null)
             {
                 body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * 5) - new Vector2(transform.position.x, transform.position.y);
+                FindClosestGoose();
             }
             else
             {
@@ -134,10 +134,9 @@ public class Duck : BaseCharacter
         }
     }
     
-    private Goose FindClosestGoose()
+    private void FindClosestGoose()
     {
         Goose[] geese = FindObjectsByType<Goose>(FindObjectsSortMode.None);
-        Goose closestGoose = null;
         float closestDistance = 10;
 
         for (int i = 0; i < geese.Length; i++)
@@ -154,8 +153,6 @@ public class Duck : BaseCharacter
                 closestDistance = distance;
             }
         }
-
-        return closestGoose;
     }
     
     #endregion

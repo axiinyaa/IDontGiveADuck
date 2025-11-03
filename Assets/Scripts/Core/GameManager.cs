@@ -18,10 +18,9 @@ public class GameManager : MonoBehaviour
 {
     // Singleton pattern - accessible from anywhere in the game
     public static GameManager Instance { get; private set; }
-    
+
     [Header("Game Configuration")]
     [SerializeField] private int startingLives = 3;    // Number of lives player starts with
-    [SerializeField] private int currentLevelId = 1;   // Current level being played
     
     [Header("Testing Tools")]
     [SerializeField] private int testLevelId = 12;     // Level to jump to for testing
@@ -36,10 +35,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int totalGoodDucksSpawned = 0; // Total good ducks spawned this level
     
     // Private state variables
-    private LevelData currentLevel;                     // Data for the current level
     private GameState currentState = GameState.Menu;    // Current game state
     private float levelStartTime;                       // When the level started
     private int totalDucksSpawned = 0;                  // Total ducks spawned this level
+    public int currentLevel = 0;
     
     // Events that other systems can subscribe to
     // This creates loose coupling between systems
@@ -47,7 +46,7 @@ public class GameManager : MonoBehaviour
     public System.Action<int> OnLivesChanged;           // Fired when lives change
     public System.Action<float> OnTimeChanged;          // Fired when time changes
     public System.Action<GameState> OnGameStateChanged; // Fired when game state changes
-    public System.Action<LevelData> OnLevelLoaded;      // Fired when a new level is loaded
+    public System.Action OnLevelLoaded;
     public DuckSpawner spawner;
     
     #region Unity Lifecycle
@@ -83,28 +82,6 @@ public class GameManager : MonoBehaviour
         LoadCurrentLevel();
     }
     
-    void Update()
-    {
-        // Check if mouse button was pressed this frame
-        if (Mouse.current?.leftButton.wasPressedThisFrame == true)
-        {
-            // Cast ray from mouse position to check if we hit this duck
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-
-            Vector2 mousePos2D = new Vector2(worldPos.x, worldPos.y);
-
-            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
-            
-            if (hit.collider != null && hit.collider.CompareTag("Clickable"))
-            {
-                // Disable collider to prevent further clicks
-                hit.collider.enabled = false;
-                hit.collider.GetComponent<BaseCharacter>().OnClicked();
-            }
-        }
-    }
-    
     #endregion
     
     #region Initialisation
@@ -134,30 +111,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void LoadCurrentLevel()
     {
-        if (LevelLoader.Instance == null)
-        {
-            Debug.LogError("LevelLoader not found! Make sure LevelLoader is in the scene.");
-            return;
-        }
-        
-        // Load level data from JSON file
-        currentLevel = LevelLoader.Instance.LoadLevel(currentLevelId);
-        
-        if (currentLevel == null)
-        {
-            Debug.LogError($"Failed to load level {currentLevelId}");
-            return;
-        }
-        
-        // Reset level-specific variables
-        timeLeft = currentLevel.timeLimit;
-        geeseClicked = 0;
-        goodDucksMissed = 0;
-        totalDucksSpawned = 0;
-        totalGoodDucksSpawned = 0;
-        
-        // Notify other systems (UI, Audio) about the new level
-        OnLevelLoaded?.Invoke(currentLevel);
+        LevelLoader.Instance.StartLevel(currentLevel);
+        OnLevelLoaded.Invoke();
     }
     
     /// <summary>
@@ -168,19 +123,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void AdvanceToNextLevel()
     {
-        int nextLevelId = LevelLoader.Instance.GetNextLevelId(currentLevelId);
-        
-        if (nextLevelId > 0)
-        {
-            currentLevelId = nextLevelId;
-            LoadCurrentLevel();
-            StartGame(false);
-        }
-        else
-        {
-            // No more levels - game complete!
-            CompleteGame();
-        }
+        currentLevel++;
+        LoadCurrentLevel();
     }
     
     /// <summary>
@@ -191,13 +135,14 @@ public class GameManager : MonoBehaviour
     public void JumpToLevel(int levelId)
     {
         // Stop current duck spawning
-        
+
         if (spawner != null)
         {
             spawner.StopSpawning();
         }
+
+        currentLevel = levelId;
         
-        currentLevelId = levelId;
         LoadCurrentLevel();
         StartGame(false);
     }
@@ -252,8 +197,6 @@ public class GameManager : MonoBehaviour
             spawner.StopSpawning();
         }
         
-        // Complete reset to level 1
-        currentLevelId = 1;
         score = 0;
         lives = 3;
         
@@ -291,20 +234,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void StartGame(bool fromMenu = false)
     {
-        if (currentLevel == null)
+        if (LevelLoader.GetCurrentLevel() == null)
         {
             Debug.LogError("Cannot start game - no level loaded!");
             return;
         }
         
         currentState = GameState.Playing;
-        
-        // Only trigger level load event if coming from menu
-        // (prevents duplicate audio/music changes when advancing levels)
-        if (fromMenu)
-        {
-            OnLevelLoaded?.Invoke(currentLevel);
-        }
+
         
         levelStartTime = Time.time;
         
@@ -312,7 +249,7 @@ public class GameManager : MonoBehaviour
         
         if (spawner != null)
         {
-            spawner.StartSpawning(currentLevel);
+            spawner.StartSpawning();
         }
         else
         {
@@ -427,7 +364,7 @@ public class GameManager : MonoBehaviour
 
         geeseClicked++;
         
-        if (geeseClicked >= currentLevel.geese)
+        if (geeseClicked >= LevelLoader.GetCurrentLevel().GeeseToSpawn.Length)
         {
             EndGame(true);
         }
@@ -511,13 +448,8 @@ public class GameManager : MonoBehaviour
     public int Lives => lives;
     public float TimeLeft => timeLeft;
     public GameState CurrentState => currentState;
-    public LevelData CurrentLevel => currentLevel;
-    public int CurrentLevelId => currentLevelId;
     public int GeeseClicked => geeseClicked;
-    public int GeeseRequired => currentLevel?.geese ?? 0;
-    public int TotalGoodDucksSpawned => totalGoodDucksSpawned;
-    public int MaxTotalSpawns => currentLevel?.maxTotalSpawns ?? 10;
-    public float LevelProgress => currentLevel != null ? (float)geeseClicked / currentLevel.goodDucks : 0f;
+    public int GeeseRequired => LevelLoader.GetCurrentLevel().GeeseToSpawn.Length;
     
     #endregion
     
