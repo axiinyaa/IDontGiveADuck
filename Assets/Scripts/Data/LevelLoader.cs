@@ -23,6 +23,18 @@ public class LevelLoader : MonoBehaviour
     public Level[] levels;
     public int currentLevelIndex;
 
+    void Awake()
+    {
+        if (Instance != null && Instance != this) 
+        { 
+            Destroy(this); 
+        } 
+        else 
+        { 
+            Instance = this; 
+        } 
+    }
+
     public void StartLevel(int levelIndex)
     {
         currentLevelIndex = levelIndex;
@@ -38,7 +50,7 @@ public class LevelLoader : MonoBehaviour
         }
         catch
         {
-            return new Level();
+            return null;
         }
     }
 }

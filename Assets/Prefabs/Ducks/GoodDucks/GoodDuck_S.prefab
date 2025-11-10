@@ -159,6 +159,10 @@ MonoBehaviour:
   body: {fileID: 0}
   collision: {fileID: 0}
   targetPosition: {x: 0, y: 0}
+  idleAnimation: {fileID: 0}
+  flyAnimation: {fileID: 0}
+  scareAnimation: {fileID: 0}
+  runawaySpeed: 6
   successParticles: {fileID: 0}
   successTextPrefab: {fileID: 0}
   spriteRenderer: {fileID: 1339619373891858794}

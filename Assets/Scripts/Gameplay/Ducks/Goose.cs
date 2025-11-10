@@ -43,7 +43,7 @@ public class Goose : BaseCharacter
         PlayPenaltyEffects();
         
         // Destroy duck
-        DestroyDuck();
+        //DestroyDuck();
     }
     
     #endregion

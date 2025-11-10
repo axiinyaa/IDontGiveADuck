@@ -1,5 +1,6 @@
+using Unity.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Axiinyaa.Tweening;
 
 /// <summary>
 /// Abstract base class for all duck types
@@ -21,10 +22,13 @@ public abstract class BaseCharacter : MonoBehaviour
     protected bool isClicked = false;
     protected bool isInitialized = false;
     public bool finishedLanding = false;
+    public bool scared = false;
     public Vector2 startingPosition;
     public Vector2 spawnPosition;
     public Rigidbody2D body;
     public Collider2D collision;
+
+    private Vector2 currentScale;
 
     // Movement
     public Vector2 targetPosition;
@@ -46,6 +50,8 @@ public abstract class BaseCharacter : MonoBehaviour
 
         body = GetComponent<Rigidbody2D>();
         collision = GetComponent<Collider2D>();
+
+        currentScale = transform.localScale;
     }
 
     /// <summary>
@@ -62,6 +68,30 @@ public abstract class BaseCharacter : MonoBehaviour
         // This prevents errors during the brief moment between object creation and initialization
         if (!isInitialized) return;
 
+        if (scared)
+        {
+            FlyAway();
+            return;
+        }
+
+        if (!finishedLanding) FlyDown();
+
+        KeepSize();
+    }
+
+    private void KeepSize()
+    {
+        transform.localScale = Vector2.Lerp(transform.localScale, currentScale, Time.deltaTime * 2);
+    }
+
+    private void FlyAway()
+    {
+        transform.position = new Vector2.Tween(new Vector2(startingPosition.x, startingPosition.y + 25), 10, Easing.EaseOut);
+        if (flyAnimation != null) flyAnimation.Play();
+    }
+    
+    private void FlyDown()
+    {
         if (Vector2.Distance(transform.position, startingPosition) > 0.5f && !finishedLanding)
         {
             transform.position = Vector2.Lerp(transform.position, startingPosition, Time.deltaTime);
@@ -70,7 +100,7 @@ public abstract class BaseCharacter : MonoBehaviour
         else
         {
             finishedLanding = true;
-            
+
             if (flyAnimation != null) flyAnimation.Stop();
             if (idleAnimation != null) idleAnimation.Play();
         }
@@ -93,10 +123,11 @@ public abstract class BaseCharacter : MonoBehaviour
         if (!isClicked && isInitialized)
         {
             isClicked = true;
-            // Disable collider to prevent further clicks
-            Collider2D col = GetComponent<Collider2D>();
-            if (col != null) col.enabled = false;
             OnClicked();
+            
+            transform.localScale = currentScale * 0.8f;
+            destroyEffect.Play();
+            scared = true;
         }
     }
     
@@ -151,7 +182,7 @@ public abstract class BaseCharacter : MonoBehaviour
         }
         
         // Remove duck from scene
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
     
     #endregion
@@ -173,11 +204,11 @@ public abstract class BaseCharacter : MonoBehaviour
     protected virtual void OnDuckSpawned()
     {
         // Default implementation - can be overridden
-        Debug.Log($"{GetType().Name} spawned at position {transform.position} with {currentLifetime}s lifetime");
 
         startingPosition = transform.position;
         targetPosition = transform.position;
         transform.position = new Vector3(startingPosition.x, startingPosition.y + 30f, -1);
+        Debug.Log($"{GetType().Name} spawned at position {transform.position}.");
     }
     
     /// <summary>

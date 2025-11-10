@@ -188,7 +188,7 @@ public class DuckSpawner : MonoBehaviour
             // Decide what type of duck to spawn (good or decoy)
             bool spawnGoodDuck = ShouldSpawnGoodDuck();
 
-            if (!spawnGoodDuck && geeseRemaining > 0)
+            if (!spawnGoodDuck && currentLevel.GeeseLeft > 0)
             {
                 SpawnDecoyDuck();
             }
@@ -228,8 +228,6 @@ public class DuckSpawner : MonoBehaviour
         
         // Configure the duck with level-specific properties
         Duck goodDuck = duck.GetComponent<Duck>();
-
-        goodDuck.Initialize();
 
         goodDucksRemaining--;
         

@@ -214,7 +214,7 @@ MonoBehaviour:
   frames:
   - {fileID: 4018011717774196652, guid: 735cc81def128e440ab0c70f6377497f, type: 3}
   - {fileID: 3849958613033323939, guid: 735cc81def128e440ab0c70f6377497f, type: 3}
-  waitForFrames: 60
+  framesPerSecond: 5
   loop: 1
   interruptable: 0
 --- !u!114 &2787759183921756318
@@ -235,8 +235,7 @@ MonoBehaviour:
   - {fileID: 4647066683761448458, guid: 726c9eb6fb39a5440a0adf4f8dfc82b9, type: 3}
   - {fileID: -3565186412504081848, guid: 726c9eb6fb39a5440a0adf4f8dfc82b9, type: 3}
   - {fileID: 3607151724904084320, guid: 726c9eb6fb39a5440a0adf4f8dfc82b9, type: 3}
-  - {fileID: 3607151724904084320, guid: 726c9eb6fb39a5440a0adf4f8dfc82b9, type: 3}
   - {fileID: -3565186412504081848, guid: 726c9eb6fb39a5440a0adf4f8dfc82b9, type: 3}
-  waitForFrames: 30
+  framesPerSecond: 20
   loop: 1
   interruptable: 0

@@ -23,6 +23,9 @@ public class Level : ScriptableObject
     private List<GameObject> ducksAllowedToSpawn = new();
     private List<GameObject> geeseAllowedToSpawn = new();
 
+    public int GeeseLeft => geeseAllowedToSpawn.Count;
+    public int DucksLeft => ducksAllowedToSpawn.Count;
+
     public void PrepareLevel()
     {
         ducksAllowedToSpawn.Clear();
@@ -34,7 +37,7 @@ public class Level : ScriptableObject
 
     public GameObject PickNextDuck()
     {
-        if (Order == SpawnOrder.Random) selectionIndex = UnityEngine.Random.Range(0, ducksAllowedToSpawn.Count);
+        if (Order == SpawnOrder.Random) selectionIndex = Random.Range(0, ducksAllowedToSpawn.Count);
 
         GameObject selected = ducksAllowedToSpawn[selectionIndex];
         ducksAllowedToSpawn.RemoveAt(selectionIndex);
@@ -44,7 +47,7 @@ public class Level : ScriptableObject
 
     public GameObject PickNextGoose()
     {
-        if (Order == SpawnOrder.Random) selectionIndex = UnityEngine.Random.Range(0, geeseAllowedToSpawn.Count);
+        if (Order == SpawnOrder.Random) selectionIndex = Random.Range(0, geeseAllowedToSpawn.Count);
 
         GameObject selected = geeseAllowedToSpawn[selectionIndex];
         geeseAllowedToSpawn.RemoveAt(selectionIndex);

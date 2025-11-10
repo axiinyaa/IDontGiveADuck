@@ -148,6 +148,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 029e312c3d1e1e24f9e46ad5596cecd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levels:
+  - {fileID: 11400000, guid: 3151122c9c94efd409c1d9e7cbe99518, type: 2}
+  currentLevelIndex: 0
 --- !u!4 &27378207
 Transform:
   m_ObjectHideFlags: 0
@@ -3180,63 +3183,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774303611}
   m_CullTransparentMesh: 1
---- !u!1001 &1814775940
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2979584664770396576, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_Name
-      value: BombGoose
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.4462192
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.7715964
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8789607526676173761, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 4a6ab3afdf2904140abf3a9952b5774f, type: 3}
 --- !u!1 &1909912755
 GameObject:
   m_ObjectHideFlags: 0
@@ -3267,7 +3213,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingLives: 3
-  currentLevelId: 1
   testLevelId: 12
   enableTestTools: 0
   score: 0
@@ -3276,6 +3221,7 @@ MonoBehaviour:
   geeseClicked: 0
   goodDucksMissed: 0
   totalGoodDucksSpawned: 0
+  currentLevel: 0
   spawner: {fileID: 2123869071}
 --- !u!4 &1909912757
 Transform:
@@ -3532,14 +3478,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb08053325422a1449934d0cb3167cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goodDuckPrefabs:
-  - {fileID: 1115852952343671650, guid: 8aec8799a6a61f1468bafdcf4c85687a, type: 3}
-  - {fileID: 1115852952343671650, guid: 4aed8a1fbc97cf84bb21865376c618c7, type: 3}
-  - {fileID: 1115852952343671650, guid: 423a67c052095d64795db3beb7f171ca, type: 3}
-  decoyDuckPrefabs:
-  - {fileID: 2979584664770396576, guid: 0b4e3570a8f1b254187947b603afcf94, type: 3}
-  - {fileID: 2979584664770396576, guid: 5faca6bce2f73cd49b211b428860d857, type: 3}
-  - {fileID: 2979584664770396576, guid: dc9deb93d1aaeb34ebf220579d1bbd4d, type: 3}
   spawnArea: {fileID: 88627198}
   spawnPadding: 1
   showSpawnArea: 1
@@ -3574,4 +3512,3 @@ SceneRoots:
   - {fileID: 55474495}
   - {fileID: 1764937601}
   - {fileID: 1539604450}
-  - {fileID: 1814775940}

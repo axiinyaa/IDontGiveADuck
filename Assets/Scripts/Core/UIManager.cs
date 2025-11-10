@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
+
 using TMPro;
 
 /// <summary>
@@ -465,7 +465,7 @@ public class UIManager : MonoBehaviour
     {
         // Check if Escape key was pressed this frame
         // This uses Unity's new Input System
-        if (Keyboard.current?.escapeKey.wasPressedThisFrame == true)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             // Only allow pause/unpause when playing or already paused
             if (GameManager.Instance != null && 
@@ -484,23 +484,6 @@ public class UIManager : MonoBehaviour
     #endregion
     
     #region Debug Info
-    
-    /// <summary>
-    /// Draws debug information on screen during development
-    /// This method is called by Unity's GUI system
-    /// Only shows when showDebugInfo is enabled
-    /// </summary>
-    void OnGUI()
-    {
-        if (!showDebugInfo || GameManager.Instance == null) return;
-        
-        // Find and display active duck count
-        DuckSpawner spawner = FindFirstObjectByType<DuckSpawner>();
-        if (spawner != null)
-            GUILayout.Label($"Active Ducks: {spawner.ActiveDuckCount}");
-        
-        GUILayout.EndArea();
-    }
     
     #endregion
 }

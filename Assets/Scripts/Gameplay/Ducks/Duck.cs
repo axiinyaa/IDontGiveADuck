@@ -6,6 +6,7 @@ using UnityEngine;
 public class Duck : BaseCharacter
 {
     [Header("Good Duck Settings")]
+    [SerializeField] private float runawaySpeed = 3;
     [SerializeField] private ParticleSystem successParticles;
     [SerializeField] private GameObject successTextPrefab; // Optional floating text
 
@@ -13,12 +14,6 @@ public class Duck : BaseCharacter
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     private Goose closestGoose;
-
-    protected override void Start()
-    {
-        base.Start();
-
-    }
 
     void OnTriggerExit2D(Collider2D collision)
     {
@@ -53,17 +48,6 @@ public class Duck : BaseCharacter
     #endregion
     
     #region Virtual Overrides
-    
-    protected override void OnDuckSpawned()
-    {
-        base.OnDuckSpawned();
-        
-        // Good duck specific spawn behaviour
-        // Could add spawn animation, sound, etc.
-        
-        // Ensure proper tag for identification
-        gameObject.tag = "GoodDuck";
-    }
 
     protected override void HandleMovement()
     {
@@ -81,7 +65,7 @@ public class Duck : BaseCharacter
         {
             if (closestGoose == null)
             {
-                body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * 5) - new Vector2(transform.position.x, transform.position.y);
+                body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * runawaySpeed) - new Vector2(transform.position.x, transform.position.y);
                 FindClosestGoose();
             }
             else
@@ -93,14 +77,6 @@ public class Duck : BaseCharacter
         }
 
         spriteRenderer.flipX = body.linearVelocityX > 0;
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-
-        if (!finishedLanding) collision.enabled = false;
-        else collision.enabled = true;
     }
 
     #endregion

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,7 +9,7 @@ public class SpriteAnimation : MonoBehaviour
 
     [Header("Animation")]
     public Sprite[] frames;
-    public int waitForFrames = 10;
+    public int framesPerSecond = 10;
     public bool loop = false;
     public bool interruptable = false;
 
@@ -41,7 +40,7 @@ public class SpriteAnimation : MonoBehaviour
         {
             spriteRenderer.sprite = frames[currentFrame];
 
-            for (int frame = 0; frame < waitForFrames; frame++) yield return null;
+            yield return new WaitForSeconds(1.0f / framesPerSecond);
 
             currentFrame++;
 
