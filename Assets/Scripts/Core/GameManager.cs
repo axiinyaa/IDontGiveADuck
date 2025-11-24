@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     public System.Action<GameState> OnGameStateChanged; // Fired when game state changes
     public System.Action OnLevelLoaded;
     public DuckSpawner spawner;
+    public GameObject pondArea;
     
     #region Unity Lifecycle
     
@@ -242,8 +243,11 @@ public class GameManager : MonoBehaviour
         
         currentState = GameState.Playing;
         lives = startingLives;
+        OnLivesChanged.Invoke(startingLives);
         levelStartTime = 9999;
         geeseClicked = 0;
+
+        AudioManager.Instance.PlayMusic(LevelLoader.GetCurrentLevel().Music);
         
         // Start spawning ducks
         

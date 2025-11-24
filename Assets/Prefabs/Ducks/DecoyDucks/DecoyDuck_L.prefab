@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 251516885786172104}
   - component: {fileID: 5094551415460283529}
   - component: {fileID: 6908825711674646287}
-  - component: {fileID: -6366035645447456121}
   - component: {fileID: -563791689025458155}
   - component: {fileID: 2099875638233825999}
   - component: {fileID: -4972191810690441366}
@@ -154,7 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointValue: 0
   lifetime: 5
-  moveSpeed: 0
+  moveSpeed: 0.2
   flySpeed: 1
   minMoveDistance: 0.1
   destroyEffect: {fileID: 8140013259858586270}
@@ -169,7 +168,6 @@ MonoBehaviour:
   scared: 0
   startingPosition: {x: 0, y: 0}
   spawnPosition: {x: 0, y: 0}
-  body: {fileID: 0}
   collision: {fileID: 0}
   targetPosition: {x: 0, y: 0}
   idleAnimation: {fileID: 2099875638233825999}
@@ -181,33 +179,6 @@ MonoBehaviour:
   penaltyTextPrefab: {fileID: 0}
   spriteRenderer: {fileID: 251516885786172104}
   subtleVisualDifference: 1
---- !u!50 &-6366035645447456121
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2979584664770396576}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &-563791689025458155
 MonoBehaviour:
   m_ObjectHideFlags: 0

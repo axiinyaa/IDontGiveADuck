@@ -477,7 +477,7 @@ Transform:
   m_GameObject: {fileID: 88627195}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.008726465, z: 0, w: 0.999962}
-  m_LocalPosition: {x: 0, y: 3.02, z: 7.9}
+  m_LocalPosition: {x: 0, y: 3.02, z: 12.4}
   m_LocalScale: {x: 0.39412, y: 0.7642369, z: 1.1709}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -674,75 +674,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 283967743}
-  - component: {fileID: 283967742}
   m_Layer: 4
   m_Name: DeathArea
   m_TagString: DeathArea
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!60 &283967742
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 283967741}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 5.5153537, y: 0.6556395}
-      - {x: 6.900413, y: 2.1243181}
-      - {x: 6.212247, y: 3.129014}
-      - {x: -5.8715672, y: 2.8052933}
-      - {x: -7.7513094, y: 0.3225103}
-      - {x: -7.098139, y: -2.7811816}
-      - {x: -7.038121, y: -3.3488815}
-      - {x: -3.7181733, y: -3.3440094}
-      - {x: -1.3144019, y: -3.4252954}
-      - {x: 5.1747627, y: -3.5565813}
-      - {x: 8.038369, y: -3.5917723}
-      - {x: 10.267264, y: -3.391171}
-      - {x: 8.7269535, y: -1.3944865}
-      - {x: 5.545331, y: 0.14913106}
-  m_UseDelaunayMesh: 0
 --- !u!4 &283967743
 Transform:
   m_ObjectHideFlags: 0
@@ -3316,8 +3254,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -18.3577, y: 10.8998}
-  m_SizeDelta: {x: 709.4238, y: 661.5381}
+  m_AnchoredPosition: {x: -10.8999, y: 10.8998}
+  m_SizeDelta: {x: 694.5083, y: 661.5381}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1745447749
 MonoBehaviour:
@@ -3373,7 +3311,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -3606,6 +3544,7 @@ MonoBehaviour:
   totalGoodDucksSpawned: 0
   currentLevel: 0
   spawner: {fileID: 2123869071}
+  pondArea: {fileID: 283967741}
 --- !u!4 &1909912757
 Transform:
   m_ObjectHideFlags: 0

@@ -16,6 +16,8 @@ MonoBehaviour:
   Music: {fileID: 8300000, guid: 52205f7d9a41148579ff63cc09a4ad3c, type: 3}
   CharactersToSpawn:
   - {fileID: 1115852952343671650, guid: 8aec8799a6a61f1468bafdcf4c85687a, type: 3}
+  - {fileID: 1115852952343671650, guid: 4aed8a1fbc97cf84bb21865376c618c7, type: 3}
+  - {fileID: 1115852952343671650, guid: 4aed8a1fbc97cf84bb21865376c618c7, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -35,5 +37,5 @@ MonoBehaviour:
   - {fileID: 2979584664770396576, guid: dc9deb93d1aaeb34ebf220579d1bbd4d, type: 3}
   - {fileID: 2979584664770396576, guid: dc9deb93d1aaeb34ebf220579d1bbd4d, type: 3}
   - {fileID: 2979584664770396576, guid: dc9deb93d1aaeb34ebf220579d1bbd4d, type: 3}
-  SecondsBeforeSpawn: 0.5
+  SecondsBeforeSpawn: 0.8
   Order: 0

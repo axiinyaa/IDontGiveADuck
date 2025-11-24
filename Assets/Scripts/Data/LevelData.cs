@@ -64,7 +64,6 @@ public class Level : ScriptableObject
         charactersAllowedToSpawn.Clear();
 
         charactersAllowedToSpawn = CharactersToSpawn.ToList();
-        AudioManager.Instance.PlayMusic(Music);
     }
 
     public GameObject PickNext()

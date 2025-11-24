@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1339619373891858794}
   - component: {fileID: 5640780115888115071}
   - component: {fileID: 4603626279781314114}
-  - component: {fileID: -9125086899151418207}
   m_Layer: 7
   m_Name: GoodDuck_M
   m_TagString: Clickable
@@ -30,9 +29,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.24477999, y: 0.24477999, z: 0.24477999}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 6865044710148712944}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1339619373891858794
@@ -124,7 +124,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -1.73}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -134,7 +134,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.5, y: 1.5}
+  m_Size: {x: 3.17, y: 1.95}
   m_EdgeRadius: 0
 --- !u!114 &4603626279781314114
 MonoBehaviour:
@@ -150,48 +150,91 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointValue: 2
   lifetime: 1000
-  moveSpeed: 10
+  moveSpeed: 0.5
   flySpeed: 1.25
-  destroyEffect: {fileID: 0}
-  clickSound: {fileID: 0}
+  minMoveDistance: 0.1
+  destroyEffect: {fileID: 2735974131680548895}
+  clickSound:
+  - {fileID: 0}
+  source: {fileID: 0}
+  soundVolume: 1
   finishedLanding: 0
   scared: 0
   startingPosition: {x: 0, y: 0}
   spawnPosition: {x: 0, y: 0}
-  body: {fileID: 0}
   collision: {fileID: 0}
   targetPosition: {x: 0, y: 0}
   idleAnimation: {fileID: 0}
   flyAnimation: {fileID: 0}
   scareAnimation: {fileID: 0}
-  runawaySpeed: 7
+  runawaySpeed: 1
   successParticles: {fileID: 0}
   successTextPrefab: {fileID: 0}
   spriteRenderer: {fileID: 1339619373891858794}
---- !u!50 &-9125086899151418207
-Rigidbody2D:
-  serializedVersion: 5
+--- !u!1001 &1841463938871773951
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6955725589134499720}
+    m_Modifications:
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7137439255086346654, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_Name
+      value: DestroyParticles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+--- !u!198 &2735974131680548895 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+  m_PrefabInstance: {fileID: 1841463938871773951}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1115852952343671650}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+--- !u!4 &6865044710148712944 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+  m_PrefabInstance: {fileID: 1841463938871773951}
+  m_PrefabAsset: {fileID: 0}

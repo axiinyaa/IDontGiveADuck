@@ -21,6 +21,8 @@ public abstract class BaseCharacter : MonoBehaviour
     [SerializeField] protected ParticleSystem destroyEffect;
     [SerializeField] protected AudioClip[] clickSound;
     [SerializeField] protected AudioSource source;
+
+    [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] protected float soundVolume = 1;
     
     // Protected properties accessible to child classes
@@ -31,7 +33,6 @@ public abstract class BaseCharacter : MonoBehaviour
     public bool scared = false;
     public Vector2 startingPosition;
     public Vector2 spawnPosition;
-    public Rigidbody2D body;
     public Collider2D collision;
 
     private Vector2 currentScale;
@@ -53,11 +54,10 @@ public abstract class BaseCharacter : MonoBehaviour
     protected virtual void Start()
     {
         Initialize();
-
-        body = GetComponent<Rigidbody2D>();
         collision = GetComponent<Collider2D>();
 
         currentScale = transform.localScale;
+        lastPosition = transform.position;
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public abstract class BaseCharacter : MonoBehaviour
 
     private void FlyAway()
     {
-        transform.position = Tweening.TweenPosition(transform.position, new Vector2(startingPosition.x, startingPosition.y + 30), 5, Easing.EaseOut);
+        transform.position = Tweening.TweenPosition(transform.position, new Vector2(startingPosition.x, startingPosition.y + 40), 5, Easing.EaseOut);
         if (flyAnimation != null) flyAnimation.Play();
         if (scareAnimation != null) scareAnimation.Play();
     }
@@ -114,17 +114,18 @@ public abstract class BaseCharacter : MonoBehaviour
         }
     }
 
+    Vector2 lastPosition;
+
     protected virtual void FixedUpdate()
     {
         if (!finishedLanding) return;
 
         HandleMovement();
+
+        spriteRenderer.flipX = transform.position.x > lastPosition.x;
+        lastPosition = transform.position;
     }
 
-    void OnMouseOver()
-    {
-        Debug.Log("Mouse Over");
-    }
 
     void OnMouseDown()
     {

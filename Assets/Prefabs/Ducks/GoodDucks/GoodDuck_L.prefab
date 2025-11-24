@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1339619373891858794}
   - component: {fileID: 5640780115888115071}
   - component: {fileID: 4603626279781314114}
-  - component: {fileID: 2058004650654427857}
   m_Layer: 7
   m_Name: GoodDuck_L
   m_TagString: Clickable
@@ -150,48 +149,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointValue: 1
   lifetime: 1000
-  moveSpeed: 5
+  moveSpeed: 0.2
   flySpeed: 1
+  minMoveDistance: 0.1
   destroyEffect: {fileID: 0}
-  clickSound: {fileID: 0}
+  clickSound:
+  - {fileID: 0}
+  source: {fileID: 0}
+  soundVolume: 1
   finishedLanding: 0
   scared: 0
   startingPosition: {x: 0, y: 0}
   spawnPosition: {x: 0, y: 0}
-  body: {fileID: 0}
   collision: {fileID: 0}
   targetPosition: {x: 0, y: 0}
   idleAnimation: {fileID: 0}
   flyAnimation: {fileID: 0}
   scareAnimation: {fileID: 0}
-  runawaySpeed: 8
+  runawaySpeed: 1
   successParticles: {fileID: 0}
   successTextPrefab: {fileID: 0}
   spriteRenderer: {fileID: 1339619373891858794}
---- !u!50 &2058004650654427857
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1115852952343671650}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0

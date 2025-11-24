@@ -11,19 +11,19 @@ public class Duck : BaseCharacter
     [SerializeField] private GameObject successTextPrefab; // Optional floating text
 
     [Header("Visual Feedback")]
-    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private Goose closestGoose;
 
-    void OnTriggerExit2D(Collider2D collision)
+    protected override void Update()
     {
-        if (!collision.CompareTag("DeathArea") || scared) return;
+        base.Update();
 
-        if (GameManager.Instance.CurrentState == GameState.LevelComplete) return;
+        float distance = Vector2.Distance(transform.position, GameManager.Instance.pondArea.transform.position);
 
-        GameManager.Instance.OnGoodDuckLost(this);
-
-        scared = true;
+        if (distance > 3.3f && finishedLanding && !scared)
+        {
+            OnClicked();
+        }
     }
 
     #region Abstract Implementation
@@ -33,6 +33,8 @@ public class Duck : BaseCharacter
         if (GameManager.Instance.CurrentState == GameState.LevelComplete) return;
 
         Debug.Log($"Good duck clicked... subtracted -1 life.");
+
+        scared = true;
         
         // Notify game manager
         if (GameManager.Instance != null)
@@ -65,18 +67,18 @@ public class Duck : BaseCharacter
         {
             if (closestGoose == null || closestGoose.scared)
             {
-                body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed) - new Vector2(transform.position.x, transform.position.y);
+                transform.position = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
                 FindClosestGoose();
             }
             else
             {
-                Vector2 direction = closestGoose.transform.position - transform.position;
+                Vector3 direction = closestGoose.transform.position - transform.position;
 
-                body.linearVelocity = -direction.normalized * Time.deltaTime * runawaySpeed;
+                transform.position += runawaySpeed * Time.deltaTime * -direction.normalized;
             }
         }
 
-        spriteRenderer.flipX = body.linearVelocityX > 0;
+        
     }
 
     #endregion

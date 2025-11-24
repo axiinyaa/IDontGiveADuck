@@ -12,7 +12,6 @@ public class Goose : BaseCharacter
     [SerializeField] private GameObject penaltyTextPrefab; // Optional floating text
     
     [Header("Visual Distinction")]
-    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private bool subtleVisualDifference = true; // Make it harder to distinguish
     
     #region Initialization Override
@@ -61,6 +60,7 @@ public class Goose : BaseCharacter
     protected override void HandleMovement()
     {
         if (!finishedLanding) return;
+        if (scared) return;
 
         if (Vector2.Distance(transform.position, targetPosition) < minMoveDistance)
         {
@@ -70,10 +70,8 @@ public class Goose : BaseCharacter
         }
         else
         {
-            body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed) - new Vector2(transform.position.x, transform.position.y);
+            transform.position = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
         }
-
-        spriteRenderer.flipX = body.linearVelocityX > 0;
     }
     
     #endregion
