@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5640780115888115071}
   - component: {fileID: 4603626279781314114}
   - component: {fileID: 5912308174752256521}
+  - component: {fileID: 5408480274405187488}
+  - component: {fileID: 7440785201361434235}
   m_Layer: 7
   m_Name: GoodDuck_S
   m_TagString: Clickable
@@ -32,7 +34,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 5934416021731884386}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1339619373891858794
@@ -124,7 +127,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -1.67}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -134,7 +137,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.05, y: 1.84}
   m_EdgeRadius: 0
 --- !u!114 &4603626279781314114
 MonoBehaviour:
@@ -150,17 +153,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointValue: 5
   lifetime: 1000
-  moveSpeed: 0
-  destroyEffect: {fileID: 0}
+  moveSpeed: 20
+  flySpeed: 2
+  destroyEffect: {fileID: 2947306745176493197}
   clickSound: {fileID: 0}
   finishedLanding: 0
+  scared: 0
   startingPosition: {x: 0, y: 0}
   spawnPosition: {x: 0, y: 0}
   body: {fileID: 0}
   collision: {fileID: 0}
   targetPosition: {x: 0, y: 0}
-  idleAnimation: {fileID: 0}
-  flyAnimation: {fileID: 0}
+  idleAnimation: {fileID: 7440785201361434235}
+  flyAnimation: {fileID: 5408480274405187488}
   scareAnimation: {fileID: 0}
   runawaySpeed: 6
   successParticles: {fileID: 0}
@@ -193,3 +198,124 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5408480274405187488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115852952343671650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3429669b6571b14196d143e1ac8d8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Fly
+  spriteRenderer: {fileID: 0}
+  frames:
+  - {fileID: -1426217431, guid: 7db254ad4e72e6440a758d1736cc17b2, type: 3}
+  - {fileID: 1976016233, guid: 7db254ad4e72e6440a758d1736cc17b2, type: 3}
+  - {fileID: 1339266392, guid: 7db254ad4e72e6440a758d1736cc17b2, type: 3}
+  - {fileID: -1437719358, guid: 7db254ad4e72e6440a758d1736cc17b2, type: 3}
+  - {fileID: -1889632830, guid: 7db254ad4e72e6440a758d1736cc17b2, type: 3}
+  framesPerSecond: 20
+  loop: 1
+  interruptable: 0
+--- !u!114 &7440785201361434235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115852952343671650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3429669b6571b14196d143e1ac8d8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Idle
+  spriteRenderer: {fileID: 0}
+  frames:
+  - {fileID: 21300000, guid: cbbf0ce3f4a7b3242ba74f0cea143b13, type: 3}
+  framesPerSecond: 10
+  loop: 0
+  interruptable: 0
+--- !u!1001 &1481965300202430061
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6955725589134499720}
+    m_Modifications:
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.54627
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.54627
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.11965014
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7137439255086346654, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_Name
+      value: DestroyParticles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+--- !u!198 &2947306745176493197 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+  m_PrefabInstance: {fileID: 1481965300202430061}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5934416021731884386 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+  m_PrefabInstance: {fileID: 1481965300202430061}
+  m_PrefabAsset: {fileID: 0}

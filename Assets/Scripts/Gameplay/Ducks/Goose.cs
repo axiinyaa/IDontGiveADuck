@@ -41,9 +41,6 @@ public class Goose : BaseCharacter
         
         // Play penalty feedback
         PlayPenaltyEffects();
-        
-        // Destroy duck
-        //DestroyDuck();
     }
     
     #endregion
@@ -65,9 +62,7 @@ public class Goose : BaseCharacter
     {
         if (!finishedLanding) return;
 
-        float minDistance = 0.1f;
-
-        if (Vector2.Distance(transform.position, targetPosition) < minDistance)
+        if (Vector2.Distance(transform.position, targetPosition) < minMoveDistance)
         {
             Vector3 randomPosition = GameManager.Instance.spawner.GetRandomSpawnPosition();
 
@@ -75,7 +70,7 @@ public class Goose : BaseCharacter
         }
         else
         {
-            body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * 10) - new Vector2(transform.position.x, transform.position.y);
+            body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed) - new Vector2(transform.position.x, transform.position.y);
         }
 
         spriteRenderer.flipX = body.linearVelocityX > 0;
@@ -89,21 +84,7 @@ public class Goose : BaseCharacter
     /// Play penalty effects when clicked
     /// </summary>
     private void PlayPenaltyEffects()
-    {
-        // Use AudioManager for sound
-        if (AudioManager.Instance != null)
-        {
-            AudioManager.Instance.PlayDuckClickDecoy(transform.position);
-        }
-        
-        // Particle effect (different from good duck)
-        if (penaltyParticles != null)
-        {
-            ParticleSystem effect = Instantiate(penaltyParticles, transform.position, transform.rotation);
-            effect.Play();
-            Destroy(effect.gameObject, effect.main.duration);
-        }
-        
+    {   
         // Floating penalty text (optional)
         if (penaltyTextPrefab != null)
         {

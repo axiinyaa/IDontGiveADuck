@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using TMPro;
+using System.Collections;
 
 /// <summary>
 /// UIManager - Centralised UI system for the game
@@ -21,6 +22,7 @@ public class UIManager : MonoBehaviour
     // The [SerializeField] attribute makes private fields visible in the Inspector
     
     [Header("HUD Elements")]
+    [SerializeField] private GameObject HUD;
     [SerializeField] private TextMeshProUGUI scoreText;      // Shows current score
     [SerializeField] private TextMeshProUGUI timerText;      // Shows time remaining
     [SerializeField] private TextMeshProUGUI livesText;      // Shows remaining lives
@@ -161,8 +163,8 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void UpdateLives(int lives)
     {
-        if (livesText != null)
-            livesText.text = $"Lives: {lives}";
+        livesText.text = $"Lives: {lives}";
+        livesText.color = Color.red;
     }
     
     /// <summary>
@@ -234,11 +236,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void HideHUDElements()
     {
-        if (scoreText != null) scoreText.gameObject.SetActive(false);
-        if (timerText != null) timerText.gameObject.SetActive(false);
-        if (livesText != null) livesText.gameObject.SetActive(false);
-        if (levelText != null) levelText.gameObject.SetActive(false);
-        if (progressText != null) progressText.gameObject.SetActive(false);
+        HUD.SetActive(false);
     }
     
     /// <summary>
@@ -247,11 +245,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void ShowHUDElements()
     {
-        if (scoreText != null) scoreText.gameObject.SetActive(true);
-        if (timerText != null) timerText.gameObject.SetActive(true);
-        if (livesText != null) livesText.gameObject.SetActive(true);
-        if (levelText != null) levelText.gameObject.SetActive(true);
-        if (progressText != null) progressText.gameObject.SetActive(true);
+        HUD.SetActive(true);
     }
     
     #endregion
@@ -307,26 +301,33 @@ public class UIManager : MonoBehaviour
     {
         if (gameOverPanel != null)
         {
-            gameOverPanel.SetActive(true);
+            StartCoroutine(LevelCompleteSequence());
+        }
+    }
 
-            // Set the title text
-            if (gameOverTitle != null)
-                gameOverTitle.text = "Level Complete!";
+    private IEnumerator LevelCompleteSequence()
+    {
+        yield return new WaitForSeconds(1);
 
-            // Show the final score
-            if (finalScoreText != null && GameManager.Instance != null)
-                finalScoreText.text = $"Final Score: {GameManager.Instance.Score:N0}";
+        gameOverPanel.SetActive(true);
 
-            // Show/hide next level button based on whether there is a next level
-            if (nextLevelButton != null)
-            {
-                nextLevelButton.gameObject.SetActive(GameManager.Instance.currentLevel < LevelLoader.Instance.levels.Length);
+        // Set the title text
+        if (gameOverTitle != null)
+            gameOverTitle.text = "Level Complete!";
 
-                // Update button text to show which level is next
-                var tmpText = nextLevelButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-                if (tmpText != null)
-                    tmpText.text = GameManager.Instance.currentLevel + 1 > 0 ? $"Next Level ({GameManager.Instance.currentLevel + 1})" : "Next Level";
-            }
+        // Show the final score
+        if (finalScoreText != null && GameManager.Instance != null)
+            finalScoreText.text = $"Final Score: {GameManager.Instance.Score:N0}";
+
+        // Show/hide next level button based on whether there is a next level
+        if (nextLevelButton != null)
+        {
+            nextLevelButton.gameObject.SetActive(GameManager.Instance.currentLevel < LevelLoader.Instance.levels.Length);
+
+            // Update button text to show which level is next
+            var tmpText = nextLevelButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            if (tmpText != null)
+                tmpText.text = GameManager.Instance.currentLevel + 1 > 0 ? $"Next Level ({GameManager.Instance.currentLevel + 1})" : "Next Level";
         }
     }
     
@@ -475,6 +476,8 @@ public class UIManager : MonoBehaviour
                 GameManager.Instance.TogglePause();
             }
         }
+
+        livesText.color = Color.Lerp(livesText.color, Color.white, Time.deltaTime);
         
         // Update progress display every frame while playing
         if (GameManager.Instance?.CurrentState == GameState.Playing)

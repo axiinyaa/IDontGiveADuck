@@ -91,8 +91,6 @@ public class DuckSpawner : MonoBehaviour
         
         // Store the level configuration for use during spawning
         currentLevel = level;
-        goodDucksRemaining = level.DucksToSpawn.Length;      // Set how many good ducks to spawn
-        geeseRemaining = level.GeeseToSpawn.Length;    // Set how many decoy ducks to spawn
 
         isSpawning = true;  // Enable spawning flag
         
@@ -167,7 +165,7 @@ public class DuckSpawner : MonoBehaviour
             if (GameManager.Instance != null)
             {
                 // WIN: Player got required good ducks
-                if (GameManager.Instance.GeeseClicked >= currentLevel.GeeseToSpawn.Length)
+                if (GameManager.Instance.GeeseClicked >= currentLevel.GeeseToSpawn)
                 {
                     Debug.Log("WIN: Player got required good ducks");
                     break;  // Exit the coroutine
@@ -184,18 +182,8 @@ public class DuckSpawner : MonoBehaviour
             // Wait for the spawn interval before spawning the next duck
             // This creates the timing for duck spawning
             yield return new WaitForSeconds(currentLevel.SecondsBeforeSpawn);
-            
-            // Decide what type of duck to spawn (good or decoy)
-            bool spawnGoodDuck = ShouldSpawnGoodDuck();
 
-            if (!spawnGoodDuck && currentLevel.GeeseLeft > 0)
-            {
-                SpawnDecoyDuck();
-            }
-            else if (goodDucksRemaining >= 0)
-            {
-                SpawnGoodDuck();
-            }
+            SpawnCharacter();
         }
         
     }
@@ -214,10 +202,10 @@ public class DuckSpawner : MonoBehaviour
     /// <summary>
     /// Spawn a good duck (the ones players should click)
     /// </summary>
-    private void SpawnGoodDuck()
+    private void SpawnCharacter()
     {
         // Select which size of good duck to spawn
-        GameObject prefab = currentLevel.PickNextDuck();
+        GameObject prefab = currentLevel.PickNext();
         if (prefab == null) return;
         
         // Get a random position within the spawn area
@@ -225,11 +213,6 @@ public class DuckSpawner : MonoBehaviour
         
         // Create the duck GameObject at the spawn position
         GameObject duck = Instantiate(prefab, spawnPosition, Quaternion.identity);
-        
-        // Configure the duck with level-specific properties
-        Duck goodDuck = duck.GetComponent<Duck>();
-
-        goodDucksRemaining--;
         
         // Add to our list of active ducks for tracking
         activeDucks.Add(duck);
@@ -240,34 +223,6 @@ public class DuckSpawner : MonoBehaviour
             GameManager.Instance.OnDuckSpawned();
             GameManager.Instance.OnGoodDuckSpawned();
         }
-    }
-    
-    /// <summary>
-    /// Spawn a decoy duck (the ones players should avoid)
-    /// </summary>
-    private void SpawnDecoyDuck()
-    {
-        // Select which size of decoy duck to spawn
-        GameObject prefab = currentLevel.PickNextGoose();
-        if (prefab == null) return;
-        
-        // Get a random position within the spawn area
-        Vector3 spawnPosition = GetRandomSpawnPosition();
-        
-        // Create the duck GameObject at the spawn position
-        GameObject duck = Instantiate(prefab, spawnPosition, Quaternion.identity);
-        
-        // Add to our list of active ducks for tracking
-        activeDucks.Add(duck);
-        geeseRemaining--;  // Decrease the count of remaining decoys
-        
-        // Notify the game manager about the spawn
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnDuckSpawned();
-        }
-        
-        Debug.Log($"Spawned decoy duck. Remaining: {geeseRemaining}");
     }
     
     #endregion

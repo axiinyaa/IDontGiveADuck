@@ -33,20 +33,20 @@ namespace Axiinyaa.Tweening
             return 1 - x;
         }
 
-        public static Vector2 Tween(this Vector2 v, Vector2 position, float durationSeconds, Easing easing)
+        public static Vector2 TweenPosition(Vector2 origin, Vector2 position, float durationSeconds, Easing easing)
         {
             if (easing == Easing.EaseIn)
             {
-                return Vector2.Lerp(v, position, EaseIn(Time.deltaTime / durationSeconds));
+                return Vector2.Lerp(origin, position, EaseIn(Time.deltaTime / durationSeconds));
             }
 
             if (easing == Easing.EaseOut)
             {
-                return Vector2.Lerp(v, position, EaseOut(Time.deltaTime / durationSeconds));
+                return Vector2.Lerp(origin, position, EaseOut(Time.deltaTime / durationSeconds));
             }
 
             // Linear
-            return Vector2.Lerp(v, position, Time.deltaTime / durationSeconds);
+            return Vector2.Lerp(origin, position, Time.deltaTime / durationSeconds);
         }
 
         public static void LerpRotation(Transform transform, Quaternion rotation, float durationSeconds, Easing easing)

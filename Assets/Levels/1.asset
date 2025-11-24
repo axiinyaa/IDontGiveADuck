@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: 1
   m_EditorClassIdentifier: 
   LevelName: Humble Beginnings
-  Music: {fileID: 0}
-  DucksToSpawn:
+  Music: {fileID: 8300000, guid: 1e31c80e72bec45d38362667ed8cbad4, type: 3}
+  CharactersToSpawn:
   - {fileID: 1115852952343671650, guid: 423a67c052095d64795db3beb7f171ca, type: 3}
-  GeeseToSpawn:
-  - {fileID: 2979584664770396576, guid: 0b4e3570a8f1b254187947b603afcf94, type: 3}
-  - {fileID: 2979584664770396576, guid: 0b4e3570a8f1b254187947b603afcf94, type: 3}
+  - {fileID: 1115852952343671650, guid: 423a67c052095d64795db3beb7f171ca, type: 3}
   - {fileID: 2979584664770396576, guid: 0b4e3570a8f1b254187947b603afcf94, type: 3}
   SecondsBeforeSpawn: 3
   Order: 0

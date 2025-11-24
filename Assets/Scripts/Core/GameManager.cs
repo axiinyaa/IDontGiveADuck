@@ -124,6 +124,7 @@ public class GameManager : MonoBehaviour
     {
         currentLevel++;
         LoadCurrentLevel();
+        StartGame();
     }
     
     /// <summary>
@@ -240,9 +241,9 @@ public class GameManager : MonoBehaviour
         }
         
         currentState = GameState.Playing;
-
-        
-        levelStartTime = Time.time;
+        lives = startingLives;
+        levelStartTime = 9999;
+        geeseClicked = 0;
         
         // Start spawning ducks
         
@@ -363,7 +364,7 @@ public class GameManager : MonoBehaviour
 
         geeseClicked++;
         
-        if (geeseClicked >= LevelLoader.GetCurrentLevel().GeeseToSpawn.Length)
+        if (geeseClicked >= LevelLoader.GetCurrentLevel().GeeseToSpawn)
         {
             EndGame(true);
         }
@@ -406,8 +407,6 @@ public class GameManager : MonoBehaviour
         score += timeBonus;
 
         currentState = GameState.LevelComplete;
-
-        spawner.ClearActiveDucks();
         
         OnScoreChanged?.Invoke(score);
     }
@@ -448,7 +447,7 @@ public class GameManager : MonoBehaviour
     public float TimeLeft => timeLeft;
     public GameState CurrentState => currentState;
     public int GeeseClicked => geeseClicked;
-    public int GeeseRequired => LevelLoader.GetCurrentLevel().GeeseToSpawn.Length;
+    public int GeeseRequired => LevelLoader.GetCurrentLevel().GeeseToSpawn;
     
     #endregion
     

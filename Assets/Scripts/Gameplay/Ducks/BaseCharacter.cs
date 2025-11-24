@@ -1,6 +1,8 @@
 using Unity.Collections;
 using UnityEngine;
 using Axiinyaa.Tweening;
+using Unity.VisualScripting;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// Abstract base class for all duck types
@@ -11,11 +13,15 @@ public abstract class BaseCharacter : MonoBehaviour
     [Header("Base Duck Properties")]
     [SerializeField] protected int pointValue = 1;
     [SerializeField] protected float lifetime = 5f;
-    [SerializeField] protected float moveSpeed = 0f; // For future moving ducks
+    [SerializeField] protected float moveSpeed = 1f; // For future moving ducks
+    [SerializeField] protected float flySpeed = 1f;
+    [SerializeField] protected float minMoveDistance = 0.1f;
     
     [Header("Visual Feedback")]
     [SerializeField] protected ParticleSystem destroyEffect;
-    [SerializeField] protected AudioClip clickSound;
+    [SerializeField] protected AudioClip[] clickSound;
+    [SerializeField] protected AudioSource source;
+    [SerializeField] protected float soundVolume = 1;
     
     // Protected properties accessible to child classes
     protected float currentLifetime;
@@ -41,9 +47,9 @@ public abstract class BaseCharacter : MonoBehaviour
     [SerializeField] SpriteAnimation idleAnimation;
     [SerializeField] SpriteAnimation flyAnimation;
     [SerializeField] SpriteAnimation scareAnimation;
-    
+
     #region Unity Lifecycle
-    
+
     protected virtual void Start()
     {
         Initialize();
@@ -68,6 +74,8 @@ public abstract class BaseCharacter : MonoBehaviour
         // This prevents errors during the brief moment between object creation and initialization
         if (!isInitialized) return;
 
+        KeepSize();
+        
         if (scared)
         {
             FlyAway();
@@ -76,25 +84,25 @@ public abstract class BaseCharacter : MonoBehaviour
 
         if (!finishedLanding) FlyDown();
 
-        KeepSize();
     }
 
     private void KeepSize()
     {
-        transform.localScale = Vector2.Lerp(transform.localScale, currentScale, Time.deltaTime * 2);
+        transform.localScale = Vector2.Lerp(transform.localScale, currentScale, Time.deltaTime * 8);
     }
 
     private void FlyAway()
     {
-        transform.position = new Vector2.Tween(new Vector2(startingPosition.x, startingPosition.y + 25), 10, Easing.EaseOut);
+        transform.position = Tweening.TweenPosition(transform.position, new Vector2(startingPosition.x, startingPosition.y + 30), 5, Easing.EaseOut);
         if (flyAnimation != null) flyAnimation.Play();
+        if (scareAnimation != null) scareAnimation.Play();
     }
     
     private void FlyDown()
     {
         if (Vector2.Distance(transform.position, startingPosition) > 0.5f && !finishedLanding)
         {
-            transform.position = Vector2.Lerp(transform.position, startingPosition, Time.deltaTime);
+            transform.position = Vector2.Lerp(transform.position, startingPosition, Time.deltaTime * flySpeed);
             if (flyAnimation != null) flyAnimation.Play();
         }
         else
@@ -125,9 +133,13 @@ public abstract class BaseCharacter : MonoBehaviour
             isClicked = true;
             OnClicked();
             
-            transform.localScale = currentScale * 0.8f;
+            transform.localScale = currentScale * 0.5f;
             destroyEffect.Play();
             scared = true;
+            if (clickSound.Length > 0)
+            {
+                source.PlayOneShot(clickSound[Random.Range(0, clickSound.Length - 1)], soundVolume);
+            }
         }
     }
     
@@ -160,29 +172,6 @@ public abstract class BaseCharacter : MonoBehaviour
         // Override in child classes for moving ducks
 
         
-    }
-    
-    /// <summary>
-    /// Common destruction logic with effects
-    /// </summary>
-    protected virtual void DestroyDuck()
-    {
-        // Play destruction effects
-        if (destroyEffect != null)
-        {
-            // Create effect at duck position
-            ParticleSystem effect = Instantiate(destroyEffect, transform.position, transform.rotation);
-            Destroy(effect.gameObject, effect.main.duration);
-        }
-        
-        // Play sound effect
-        if (clickSound != null)
-        {
-            AudioSource.PlayClipAtPoint(clickSound, transform.position);
-        }
-        
-        // Remove duck from scene
-        //Destroy(gameObject);
     }
     
     #endregion

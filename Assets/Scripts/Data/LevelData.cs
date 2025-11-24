@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewLevel", menuName = "ScriptableObject/New Level")]
@@ -12,45 +13,68 @@ public class Level : ScriptableObject
     public AudioClip Music;
 
     [Header("Prefabs to Spawn")]
-    public GameObject[] DucksToSpawn;
-    public GameObject[] GeeseToSpawn;
+    public GameObject[] CharactersToSpawn;
 
     [Header("Spawn Settings")]
     public float SecondsBeforeSpawn = 3;
     public SpawnOrder Order = SpawnOrder.Normal;
 
     private int selectionIndex = 0;
-    private List<GameObject> ducksAllowedToSpawn = new();
-    private List<GameObject> geeseAllowedToSpawn = new();
+    private List<GameObject> charactersAllowedToSpawn = new();
 
-    public int GeeseLeft => geeseAllowedToSpawn.Count;
-    public int DucksLeft => ducksAllowedToSpawn.Count;
+    public int GeeseLeft => CalculateGeeseCount();
+    public int GeeseToSpawn => CalculateTotalGeeseCount();
+
+    public int CalculateGeeseCount()
+    {
+        int count = 0;
+
+        foreach (GameObject character in charactersAllowedToSpawn)
+        {
+            if (character == null) continue;
+
+            if (character.TryGetComponent(out Goose goose))
+            {
+                count += 1;
+            }
+        }
+
+        return count;
+    }
+
+    public int CalculateTotalGeeseCount()
+    {
+        int count = 0;
+
+        foreach (GameObject character in CharactersToSpawn)
+        {
+            if (character == null) continue;
+
+            if (character.TryGetComponent(out Goose goose))
+            {
+                count += 1;
+            }
+        }
+
+        return count;
+    }
 
     public void PrepareLevel()
     {
-        ducksAllowedToSpawn.Clear();
-        geeseAllowedToSpawn.Clear();
+        charactersAllowedToSpawn.Clear();
 
-        ducksAllowedToSpawn = DucksToSpawn.ToList();
-        geeseAllowedToSpawn = GeeseToSpawn.ToList();
+        charactersAllowedToSpawn = CharactersToSpawn.ToList();
+        AudioManager.Instance.PlayMusic(Music);
     }
 
-    public GameObject PickNextDuck()
+    public GameObject PickNext()
     {
-        if (Order == SpawnOrder.Random) selectionIndex = Random.Range(0, ducksAllowedToSpawn.Count);
+        if (Order == SpawnOrder.Random) selectionIndex = Random.Range(0, charactersAllowedToSpawn.Count);
 
-        GameObject selected = ducksAllowedToSpawn[selectionIndex];
-        ducksAllowedToSpawn.RemoveAt(selectionIndex);
+        if (selectionIndex >= charactersAllowedToSpawn.Count) return null;
 
-        return selected;
-    }
-
-    public GameObject PickNextGoose()
-    {
-        if (Order == SpawnOrder.Random) selectionIndex = Random.Range(0, geeseAllowedToSpawn.Count);
-
-        GameObject selected = geeseAllowedToSpawn[selectionIndex];
-        geeseAllowedToSpawn.RemoveAt(selectionIndex);
+        GameObject selected = charactersAllowedToSpawn[selectionIndex];
+        charactersAllowedToSpawn.RemoveAt(selectionIndex);
 
         return selected;
     }

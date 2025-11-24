@@ -17,11 +17,13 @@ public class Duck : BaseCharacter
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (!collision.CompareTag("DeathArea")) return;
+        if (!collision.CompareTag("DeathArea") || scared) return;
+
+        if (GameManager.Instance.CurrentState == GameState.LevelComplete) return;
 
         GameManager.Instance.OnGoodDuckLost(this);
 
-        DestroyDuck();
+        scared = true;
     }
 
     #region Abstract Implementation
@@ -41,8 +43,6 @@ public class Duck : BaseCharacter
         // Play success feedback
         PlaySuccessEffects();
         
-        // Destroy duck
-        DestroyDuck();
     }
     
     #endregion
@@ -63,16 +63,16 @@ public class Duck : BaseCharacter
         }
         else
         {
-            if (closestGoose == null)
+            if (closestGoose == null || closestGoose.scared)
             {
-                body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * runawaySpeed) - new Vector2(transform.position.x, transform.position.y);
+                body.linearVelocity = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed) - new Vector2(transform.position.x, transform.position.y);
                 FindClosestGoose();
             }
             else
             {
                 Vector2 direction = closestGoose.transform.position - transform.position;
 
-                body.linearVelocity = -direction.normalized * Time.deltaTime * 30;
+                body.linearVelocity = -direction.normalized * Time.deltaTime * runawaySpeed;
             }
         }
 

@@ -150,10 +150,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointValue: 1
   lifetime: 1000
-  moveSpeed: 0
+  moveSpeed: 5
+  flySpeed: 1
   destroyEffect: {fileID: 0}
   clickSound: {fileID: 0}
   finishedLanding: 0
+  scared: 0
   startingPosition: {x: 0, y: 0}
   spawnPosition: {x: 0, y: 0}
   body: {fileID: 0}
