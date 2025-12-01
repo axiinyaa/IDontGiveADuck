@@ -16,6 +16,7 @@ public abstract class BaseCharacter : MonoBehaviour
     [SerializeField] protected float moveSpeed = 1f; // For future moving ducks
     [SerializeField] protected float flySpeed = 1f;
     [SerializeField] protected float minMoveDistance = 0.1f;
+    [SerializeField] protected GameObject splashEffect;
     
     [Header("Visual Feedback")]
     [SerializeField] protected ParticleSystem destroyEffect;
@@ -45,9 +46,11 @@ public abstract class BaseCharacter : MonoBehaviour
     public bool IsClicked => isClicked;
 
     [Header("Animations")]
-    [SerializeField] SpriteAnimation idleAnimation;
+    public SpriteAnimation idleAnimation;
     [SerializeField] SpriteAnimation flyAnimation;
     [SerializeField] SpriteAnimation scareAnimation;
+
+    Vector2 originalFeatherPosition;
 
     #region Unity Lifecycle
 
@@ -58,6 +61,10 @@ public abstract class BaseCharacter : MonoBehaviour
 
         currentScale = transform.localScale;
         lastPosition = transform.position;
+
+        splashEffect.SetActive(false);
+        
+        if (destroyEffect != null) originalFeatherPosition = destroyEffect.transform.position;
     }
 
     /// <summary>
@@ -96,17 +103,23 @@ public abstract class BaseCharacter : MonoBehaviour
         transform.position = Tweening.TweenPosition(transform.position, new Vector2(startingPosition.x, startingPosition.y + 40), 5, Easing.EaseOut);
         if (flyAnimation != null) flyAnimation.Play();
         if (scareAnimation != null) scareAnimation.Play();
+
+        //if (destroyEffect != null) destroyEffect.transform.position = originalFeatherPosition;
     }
     
     private void FlyDown()
     {
         if (Vector2.Distance(transform.position, startingPosition) > 0.5f && !finishedLanding)
         {
-            transform.position = Vector2.Lerp(transform.position, startingPosition, Time.deltaTime * flySpeed);
+            transform.position = Vector2.Lerp(transform.position, startingPosition, Time.deltaTime * (flySpeed * 2));
             if (flyAnimation != null) flyAnimation.Play();
         }
         else
         {
+            splashEffect.SetActive(true);
+            splashEffect.GetComponentInChildren<Animator>().Play("Splash");
+            splashEffect.GetComponent<AudioSource>().Play();
+
             finishedLanding = true;
 
             if (flyAnimation != null) flyAnimation.Stop();
@@ -131,16 +144,21 @@ public abstract class BaseCharacter : MonoBehaviour
     {
         if (!isClicked && isInitialized)
         {
-            isClicked = true;
-            OnClicked();
-            
-            transform.localScale = currentScale * 0.5f;
-            destroyEffect.Play();
-            scared = true;
             if (clickSound.Length > 0)
             {
                 source.PlayOneShot(clickSound[Random.Range(0, clickSound.Length - 1)], soundVolume);
             }
+
+            transform.localScale = currentScale * 0.5f;
+
+            if (!finishedLanding) return;
+
+            isClicked = true;
+
+            OnClicked();
+            
+            destroyEffect.Play();
+            scared = true;
         }
     }
     

@@ -39,7 +39,7 @@ public class Duck : BaseCharacter
         // Notify game manager
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.OnGoodDuckClicked(this);
+            GameManager.Instance.OnDuckClicked(this);
         }
         
         // Play success feedback

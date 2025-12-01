@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 using TMPro;
 using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// UIManager - Centralised UI system for the game
@@ -23,11 +25,16 @@ public class UIManager : MonoBehaviour
     
     [Header("HUD Elements")]
     [SerializeField] private GameObject HUD;
+    [SerializeField] private GameObject title;
+    [SerializeField] private LevelSelect levelSelect;
     [SerializeField] private TextMeshProUGUI scoreText;      // Shows current score
     [SerializeField] private TextMeshProUGUI timerText;      // Shows time remaining
     [SerializeField] private TextMeshProUGUI livesText;      // Shows remaining lives
     [SerializeField] private TextMeshProUGUI levelText;      // Shows current level number
     [SerializeField] private TextMeshProUGUI progressText;   // Shows progress (ducks clicked/required)
+    [SerializeField] private GameObject wantedPosterPrefab;
+    [SerializeField] private GameObject wantedPosterContainer;
+    [SerializeField] private GameObject tutorial;
     
     [Header("Game Over Panel")]
     [SerializeField] private GameObject gameOverPanel;       // Container for game over UI
@@ -35,7 +42,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI finalScoreText; // Shows final score or restart message
     [SerializeField] private Button restartButton;           // Button to restart current level
     [SerializeField] private Button nextLevelButton;         // Button to go to next level
-    
+
     [Header("Pause Panel")]
     [SerializeField] private GameObject pausePanel;          // Container for pause menu
     [SerializeField] private Button resumeButton;            // Button to resume game
@@ -92,11 +99,13 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.OnLivesChanged += UpdateLives;        // When lives change
             GameManager.Instance.OnGameStateChanged += UpdateGameState; // When game state changes
             GameManager.Instance.OnLevelLoaded += UpdateLevelInfo;     // When new level loads
+            GameManager.Instance.OnGetWantedPosters += UpdateWantedPosters;
+            GameManager.Instance.OnClearWantedPosters += ClearWantedPosters;
         }
         
         // Start with a clean UI state
         HideHUDElements();
-        ShowInstructions();
+        MainMenu();
     }
     
     /// <summary>
@@ -138,8 +147,6 @@ public class UIManager : MonoBehaviour
             pauseRestartButton.onClick.AddListener(OnRestartClicked);
         if (startGameButton != null)
             startGameButton.onClick.AddListener(OnStartGameClicked);
-        if (testLevel12Button != null)
-            testLevel12Button.onClick.AddListener(OnTestLevelClicked);
     }
     
     #endregion
@@ -173,7 +180,7 @@ public class UIManager : MonoBehaviour
     public void UpdateLevelInfo()
     {
         if (levelText != null)
-            levelText.text = $"Level: {GameManager.Instance.currentLevel}";
+            levelText.text = $"Level: {GameManager.Instance.currentLevel + 1}";
         
         UpdateProgress();
     }
@@ -188,6 +195,36 @@ public class UIManager : MonoBehaviour
             int clicked = GameManager.Instance.GeeseClicked;
             int required = GameManager.Instance.GeeseRequired;
             progressText.text = $"Progress: {clicked}/{required}";
+        }
+    }
+
+    public void UpdateWantedPosters()
+    {
+        List<Goose> existingGeese = new();
+
+        wantedPosterContainer.transform.localScale = new Vector3(2, 2, 2);
+
+        foreach (Goose goose in LevelLoader.GetCurrentLevel().GetGeese())
+        {
+            if (existingGeese.Contains(goose)) continue;
+
+            existingGeese.Add(goose);
+
+            WantedPoster wantedPoster = Instantiate(wantedPosterPrefab, wantedPosterContainer.transform).GetComponent<WantedPoster>();
+
+            Texture texture = goose.idleAnimation?.frames[0].texture;
+
+            if (texture == null) return;
+
+            wantedPoster.gooseImage.texture = texture;
+        }
+    }
+
+    public void ClearWantedPosters()
+    {
+        foreach (Transform obj in wantedPosterContainer.transform)
+        {
+            Destroy(obj.gameObject);
         }
     }
     
@@ -205,7 +242,7 @@ public class UIManager : MonoBehaviour
         switch (newState)
         {
             case GameState.Menu:
-                ShowInstructions();
+                MainMenu();
                 break;
             case GameState.Playing:
                 ShowGameHUD();
@@ -258,21 +295,35 @@ public class UIManager : MonoBehaviour
     /// Shows the instructions panel at the start of the game
     /// If no instructions panel exists, starts the game immediately
     /// </summary>
-    private void ShowInstructions()
+    public void MainMenu()
     {
+        title.SetActive(true);
+        
+        ResetLevelButtons();
+
         SetAllPanelsInactive();  // Hide all other panels first
         HideHUDElements();       // Hide HUD elements
-        
-        if (instructionsPanel != null)
+    }
+
+    private void ResetLevelButtons()
+    {
+        foreach (LevelButton button in levelSelect.GetLevelButtons())
         {
-            instructionsPanel.SetActive(true);
+            button.button.onClick.AddListener(() => OnLevelButtonClicked(button.level));
         }
-        else
+    }
+
+    public void OnLevelButtonClicked(int level)
+    {
+        levelSelect.gameObject.SetActive(false);
+
+        if (level == 0)
         {
-            // If no instructions panel, start the game immediately
-            if (GameManager.Instance != null)
-                GameManager.Instance.StartGame(true);
+            tutorial.SetActive(true);
+            return;
         }
+
+        GameManager.Instance.JumpToLevel(level);
     }
     
     /// <summary>
@@ -307,6 +358,8 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator LevelCompleteSequence()
     {
+        PlayerPrefs.SetInt("Level", GameManager.Instance.currentLevel + 1);
+
         yield return new WaitForSeconds(1);
 
         gameOverPanel.SetActive(true);
@@ -322,12 +375,12 @@ public class UIManager : MonoBehaviour
         // Show/hide next level button based on whether there is a next level
         if (nextLevelButton != null)
         {
-            nextLevelButton.gameObject.SetActive(GameManager.Instance.currentLevel < LevelLoader.Instance.levels.Length);
+            nextLevelButton.gameObject.SetActive(GameManager.Instance.currentLevel < LevelLoader.Instance.levels.Length - 1);
 
             // Update button text to show which level is next
             var tmpText = nextLevelButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
             if (tmpText != null)
-                tmpText.text = GameManager.Instance.currentLevel + 1 > 0 ? $"Next Level ({GameManager.Instance.currentLevel + 1})" : "Next Level";
+                tmpText.text = GameManager.Instance.currentLevel + 1 > 0 ? $"Next Level ({GameManager.Instance.currentLevel + 2})" : "Next Level";
         }
     }
     
@@ -344,11 +397,11 @@ public class UIManager : MonoBehaviour
                 gameOverTitle.text = "Level Failed!";
             
             if (finalScoreText != null && GameManager.Instance != null)
-                finalScoreText.text = "Restart from Level 1";
+                finalScoreText.text = $"Final Score: {GameManager.Instance.Score:N0}";
             
             // Hide next level button since player failed
             if (nextLevelButton != null)
-                nextLevelButton.gameObject.SetActive(false);
+                nextLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Retry Level";
         }
     }
     
@@ -396,12 +449,7 @@ public class UIManager : MonoBehaviour
     /// Hides instructions and starts the game
     /// </summary>
     private void OnStartGameClicked()
-    {
-        if (instructionsPanel != null)
-            instructionsPanel.SetActive(false);
-        
-        if (GameManager.Instance != null)
-            GameManager.Instance.StartGame(true);
+    {  
     }
     
     /// <summary>
@@ -410,7 +458,8 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void OnRestartClicked()
     {
-        GameManager.Instance?.RestartLevel();  // ?. is null-conditional operator - only calls if not null
+        Time.timeScale = 1f;
+        GameManager.Instance.RestartLevel();
     }
     
     /// <summary>
@@ -431,28 +480,6 @@ public class UIManager : MonoBehaviour
         GameManager.Instance?.TogglePause();
     }
     
-    /// <summary>
-    /// Called when the test level button is clicked
-    /// Jumps to a specific level for testing purposes
-    /// </summary>
-    private void OnTestLevelClicked()
-    {
-        // Check if test button is enabled
-        if (!showTestButton)
-        {
-            Debug.LogWarning("Test button is disabled. Enable 'showTestButton' to use this feature.");
-            return;
-        }
-        
-        if (instructionsPanel != null)
-            instructionsPanel.SetActive(false);
-        
-        if (GameManager.Instance != null)
-        {
-            Debug.Log($"Test button clicked - jumping to level {testButtonLevel}");
-            GameManager.Instance.JumpToLevel(testButtonLevel);
-        }
-    }
     
     #endregion
     
@@ -477,11 +504,17 @@ public class UIManager : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.R) && GameManager.Instance.CurrentState == GameState.Menu)
+        {
+            PlayerPrefs.DeleteAll();
+            ResetLevelButtons();
+        }
+
+        wantedPosterContainer.transform.localScale = Vector3.Lerp(wantedPosterContainer.transform.localScale, Vector3.one, Time.deltaTime);
+
         livesText.color = Color.Lerp(livesText.color, Color.white, Time.deltaTime);
         
-        // Update progress display every frame while playing
-        if (GameManager.Instance?.CurrentState == GameState.Playing)
-            UpdateProgress();
+        UpdateProgress();
     }
     
     #endregion

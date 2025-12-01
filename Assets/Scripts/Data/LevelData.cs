@@ -59,6 +59,40 @@ public class Level : ScriptableObject
         return count;
     }
 
+    public List<Goose> GetGeese()
+    {
+        List<Goose> geese = new();
+
+        foreach (GameObject character in CharactersToSpawn)
+        {
+            if (character == null) continue;
+
+            if (character.TryGetComponent(out Goose goose))
+            {
+                geese.Add(goose);
+            }
+        }
+
+        return geese;
+    }
+
+    public List<Duck> GetDucks()
+    {
+        List<Duck> ducks = new();
+
+        foreach (GameObject character in CharactersToSpawn)
+        {
+            if (character == null) continue;
+
+            if (character.TryGetComponent(out Duck duck))
+            {
+                ducks.Add(duck);
+            }
+        }
+
+        return ducks;
+    }
+
     public void PrepareLevel()
     {
         charactersAllowedToSpawn.Clear();

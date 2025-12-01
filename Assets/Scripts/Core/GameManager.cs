@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -32,6 +33,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int geeseClicked = 0;  // Number of good ducks clicked
     [SerializeField] private int goodDucksMissed = 0;   // Number of good ducks missed
     [SerializeField] private int totalGoodDucksSpawned = 0; // Total good ducks spawned this level
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip incorrectBuzzer;
+    [SerializeField] private AudioClip correctSound;
+    [SerializeField] private AudioClip applauseSound;
     
     // Private state variables
     private GameState currentState = GameState.Menu;    // Current game state
@@ -41,13 +48,16 @@ public class GameManager : MonoBehaviour
     
     // Events that other systems can subscribe to
     // This creates loose coupling between systems
-    public System.Action<int> OnScoreChanged;           // Fired when score changes
-    public System.Action<int> OnLivesChanged;           // Fired when lives change
-    public System.Action<float> OnTimeChanged;          // Fired when time changes
-    public System.Action<GameState> OnGameStateChanged; // Fired when game state changes
-    public System.Action OnLevelLoaded;
+    public Action<int> OnScoreChanged;           // Fired when score changes
+    public Action<int> OnLivesChanged;           // Fired when lives change
+    public Action<float> OnTimeChanged;          // Fired when time changes
+    public Action<GameState> OnGameStateChanged; // Fired when game state changes
+    public Action OnLevelLoaded;
+    public Action OnClearWantedPosters;
+    public Action OnGetWantedPosters;
     public DuckSpawner spawner;
     public GameObject pondArea;
+    public float streak;
     
     #region Unity Lifecycle
     
@@ -123,7 +133,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void AdvanceToNextLevel()
     {
-        currentLevel++;
+        if (currentState != GameState.GameOver)
+        {
+            currentLevel++;
+        }
+        
         LoadCurrentLevel();
         StartGame();
     }
@@ -145,7 +159,7 @@ public class GameManager : MonoBehaviour
         currentLevel = levelId;
         
         LoadCurrentLevel();
-        StartGame(false);
+        StartGame();
     }
     
     /// <summary>
@@ -215,7 +229,7 @@ public class GameManager : MonoBehaviour
         OnTimeChanged?.Invoke(timeLeft);
         
         // Load level 1 and return to menu
-        LoadCurrentLevel();
+        currentLevel = 0;
         currentState = GameState.Menu;
         OnGameStateChanged?.Invoke(currentState);
     }
@@ -246,8 +260,15 @@ public class GameManager : MonoBehaviour
         OnLivesChanged.Invoke(startingLives);
         levelStartTime = 9999;
         geeseClicked = 0;
+        score = 0;
+        OnScoreChanged.Invoke(score);
+
+        streak = 0;
 
         AudioManager.Instance.PlayMusic(LevelLoader.GetCurrentLevel().Music);
+
+        OnClearWantedPosters.Invoke();
+        OnGetWantedPosters.Invoke();
         
         // Start spawning ducks
         
@@ -285,6 +306,8 @@ public class GameManager : MonoBehaviour
         }
         
         currentState = won ? GameState.LevelComplete : GameState.GameOver;
+
+        
         
         // Stop spawning ducks
         
@@ -332,7 +355,7 @@ public class GameManager : MonoBehaviour
     /// 3. Updates the UI
     /// 4. Checks if the level is complete
     /// </summary>
-    public void OnGoodDuckClicked(Duck duck)
+    public void OnDuckClicked(Duck duck)
     {
         if (currentState != GameState.Playing) return;
 
@@ -340,20 +363,10 @@ public class GameManager : MonoBehaviour
 
         OnLivesChanged.Invoke(lives);
 
-        if (lives <= 0)
-        {
-            EndGame(false);
-        }
-    }
+        streak = 0;
 
-
-    public void OnGoodDuckLost(Duck duck)
-    {
-        if (currentState != GameState.Playing) return;
-
-        lives--;
-
-        OnLivesChanged.Invoke(lives);
+        audioSource.pitch = 1;
+        audioSource.PlayOneShot(incorrectBuzzer);
 
         if (lives <= 0)
         {
@@ -367,9 +380,21 @@ public class GameManager : MonoBehaviour
         if (currentState != GameState.Playing) return;
 
         geeseClicked++;
+
+        // I LOVE LINEAR INTERPOLATION !!!!
+        audioSource.pitch = Mathf.Lerp(Mathf.Max(audioSource.pitch, 0.1f), 2f, streak / LevelLoader.GetCurrentLevel().GeeseToSpawn);
+
+        score += 100;
+        OnScoreChanged.Invoke(score);
+
+        streak++;
+
+        audioSource.PlayOneShot(correctSound);
         
         if (geeseClicked >= LevelLoader.GetCurrentLevel().GeeseToSpawn)
-        {
+        {   
+            audioSource.pitch = 1;
+            audioSource.PlayOneShot(applauseSound, 2);
             EndGame(true);
         }
     }
@@ -452,11 +477,11 @@ public class GameManager : MonoBehaviour
     public GameState CurrentState => currentState;
     public int GeeseClicked => geeseClicked;
     public int GeeseRequired => LevelLoader.GetCurrentLevel().GeeseToSpawn;
-    
+
     #endregion
-    
+
     #region Scene Management
-    
+
     /// <summary>
     /// Restarts the entire game by reloading the scene
     /// 

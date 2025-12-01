@@ -18,9 +18,11 @@ MonoBehaviour:
   - {fileID: 2979584664770396576, guid: 0b4e3570a8f1b254187947b603afcf94, type: 3}
   - {fileID: 1115852952343671650, guid: 4aed8a1fbc97cf84bb21865376c618c7, type: 3}
   - {fileID: 1115852952343671650, guid: 4aed8a1fbc97cf84bb21865376c618c7, type: 3}
+  - {fileID: 2979584664770396576, guid: 5faca6bce2f73cd49b211b428860d857, type: 3}
   - {fileID: 2979584664770396576, guid: 0b4e3570a8f1b254187947b603afcf94, type: 3}
   - {fileID: 1115852952343671650, guid: 4aed8a1fbc97cf84bb21865376c618c7, type: 3}
   - {fileID: 1115852952343671650, guid: 4aed8a1fbc97cf84bb21865376c618c7, type: 3}
   - {fileID: 2979584664770396576, guid: 0b4e3570a8f1b254187947b603afcf94, type: 3}
+  - {fileID: 2979584664770396576, guid: 5faca6bce2f73cd49b211b428860d857, type: 3}
   SecondsBeforeSpawn: 2.5
   Order: 0

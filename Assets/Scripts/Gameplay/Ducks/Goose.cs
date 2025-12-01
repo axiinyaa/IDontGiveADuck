@@ -31,7 +31,6 @@ public class Goose : BaseCharacter
     
     public override void OnClicked()
     {
-        
         // Notify game manager about penalty
         if (GameManager.Instance != null)
         {
@@ -39,7 +38,7 @@ public class Goose : BaseCharacter
         }
         
         // Play penalty feedback
-        PlayPenaltyEffects();
+        PlayEffects();
     }
     
     #endregion
@@ -81,7 +80,7 @@ public class Goose : BaseCharacter
     /// <summary>
     /// Play penalty effects when clicked
     /// </summary>
-    private void PlayPenaltyEffects()
+    private void PlayEffects()
     {   
         // Floating penalty text (optional)
         if (penaltyTextPrefab != null)
