@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 1339619373891858794}
   - component: {fileID: 5640780115888115071}
   - component: {fileID: 4603626279781314114}
+  - component: {fileID: 1889989942327020299}
+  - component: {fileID: 7294560395807152077}
+  - component: {fileID: 7488458433090342404}
   m_Layer: 7
   m_Name: GoodDuck_M
   m_TagString: Clickable
@@ -167,12 +170,73 @@ MonoBehaviour:
   spawnPosition: {x: 0, y: 0}
   collision: {fileID: 0}
   targetPosition: {x: 0, y: 0}
-  idleAnimation: {fileID: 0}
-  flyAnimation: {fileID: 0}
-  scareAnimation: {fileID: 0}
+  idleAnimation: {fileID: 1889989942327020299}
+  flyAnimation: {fileID: 7294560395807152077}
+  scareAnimation: {fileID: 7488458433090342404}
   runawaySpeed: 1
   successParticles: {fileID: 0}
   successTextPrefab: {fileID: 0}
+--- !u!114 &1889989942327020299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115852952343671650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3429669b6571b14196d143e1ac8d8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Idle
+  spriteRenderer: {fileID: 0}
+  frames:
+  - {fileID: 21300000, guid: 3f911f2dab54ca24a875c2310fa9f712, type: 3}
+  framesPerSecond: 10
+  loop: 0
+  interruptable: 0
+--- !u!114 &7294560395807152077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115852952343671650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3429669b6571b14196d143e1ac8d8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Fly
+  spriteRenderer: {fileID: 0}
+  frames:
+  - {fileID: -1784165333, guid: 365eb91c77f3433dda3130245be42991, type: 3}
+  - {fileID: 548042194, guid: 365eb91c77f3433dda3130245be42991, type: 3}
+  - {fileID: -268430736, guid: 365eb91c77f3433dda3130245be42991, type: 3}
+  framesPerSecond: 5
+  loop: 1
+  interruptable: 0
+--- !u!114 &7488458433090342404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115852952343671650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3429669b6571b14196d143e1ac8d8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Scared
+  spriteRenderer: {fileID: 0}
+  frames:
+  - {fileID: -1567395682, guid: 9100c370e08418578a1a74f2395ab24a, type: 3}
+  - {fileID: -686042516, guid: 9100c370e08418578a1a74f2395ab24a, type: 3}
+  - {fileID: 653328802, guid: 9100c370e08418578a1a74f2395ab24a, type: 3}
+  framesPerSecond: 5
+  loop: 1
+  interruptable: 0
 --- !u!1001 &1841463938871773951
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -181,33 +245,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6955725589134499720}
     m_Modifications:
+    - target: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0.5330188
+      objectReference: {fileID: 0}
+    - target: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.9322731
+      objectReference: {fileID: 0}
+    - target: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.37
       objectReference: {fileID: 0}
     - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
+      value: 4.99
       objectReference: {fileID: 0}
     - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1339619373891858794}
   - component: {fileID: 5640780115888115071}
   - component: {fileID: 4603626279781314114}
+  - component: {fileID: 5613448269595273765}
+  - component: {fileID: 6502109153669910222}
   m_Layer: 7
   m_Name: GoodDuck_L
   m_TagString: Clickable
@@ -33,6 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8349606873162830836}
+  - {fileID: 3488080018660582686}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1339619373891858794
@@ -154,7 +157,7 @@ MonoBehaviour:
   flySpeed: 1
   minMoveDistance: 0.1
   splashEffect: {fileID: 7651465764108369889}
-  destroyEffect: {fileID: 0}
+  destroyEffect: {fileID: 5392372789230064881}
   clickSound:
   - {fileID: 0}
   source: {fileID: 0}
@@ -166,12 +169,51 @@ MonoBehaviour:
   spawnPosition: {x: 0, y: 0}
   collision: {fileID: 0}
   targetPosition: {x: 0, y: 0}
-  idleAnimation: {fileID: 0}
-  flyAnimation: {fileID: 0}
-  scareAnimation: {fileID: 0}
-  runawaySpeed: 1
+  idleAnimation: {fileID: 5613448269595273765}
+  flyAnimation: {fileID: 6502109153669910222}
+  scareAnimation: {fileID: 6502109153669910222}
+  runawaySpeed: 0.2
   successParticles: {fileID: 0}
   successTextPrefab: {fileID: 0}
+--- !u!114 &5613448269595273765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115852952343671650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3429669b6571b14196d143e1ac8d8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Idle
+  spriteRenderer: {fileID: 0}
+  frames:
+  - {fileID: 21300000, guid: 29edb427a40326a43bfdff579c21d7d5, type: 3}
+  framesPerSecond: 10
+  loop: 0
+  interruptable: 0
+--- !u!114 &6502109153669910222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115852952343671650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3429669b6571b14196d143e1ac8d8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Fly
+  spriteRenderer: {fileID: 0}
+  frames:
+  - {fileID: 7406437299309879795, guid: cd4421153597fb2a5a198755ce3ac95b, type: 3}
+  - {fileID: -1461968832452596757, guid: cd4421153597fb2a5a198755ce3ac95b, type: 3}
+  framesPerSecond: 100
+  loop: 1
+  interruptable: 0
 --- !u!1001 &2680911316902802082
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -246,4 +288,83 @@ GameObject:
 Transform:
   m_CorrespondingSourceObject: {fileID: 6263171819144421718, guid: 6dec3bb847e5f95458172d671df96b65, type: 3}
   m_PrefabInstance: {fileID: 2680911316902802082}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8548850461318612497
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6955725589134499720}
+    m_Modifications:
+    - target: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.7122642
+      objectReference: {fileID: 0}
+    - target: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.9959145
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.0017499999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.03365
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.0025094254
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.9999969
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -179.712
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7137439255086346654, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+      propertyPath: m_Name
+      value: DestroyParticles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+--- !u!4 &3488080018660582686 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5101373831494394639, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+  m_PrefabInstance: {fileID: 8548850461318612497}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &5392372789230064881 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4356687591997625056, guid: 0e033d7b5afa7bc478048c81617e3324, type: 3}
+  m_PrefabInstance: {fileID: 8548850461318612497}
   m_PrefabAsset: {fileID: 0}

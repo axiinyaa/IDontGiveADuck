@@ -4323,6 +4323,7 @@ MonoBehaviour:
   currentLevel: 0
   spawner: {fileID: 2123869071}
   pondArea: {fileID: 283967741}
+  streak: 0
 --- !u!4 &1909912757
 Transform:
   m_ObjectHideFlags: 0

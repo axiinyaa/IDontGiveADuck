@@ -112,10 +112,10 @@ TextureImporter:
       name: SpeedyGooseRetreat_0
       rect:
         serializedVersion: 2
-        x: 157
-        y: 606
-        width: 184
-        height: 394
+        x: 0
+        y: 500
+        width: 500
+        height: 500
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,10 +134,10 @@ TextureImporter:
       name: SpeedyGooseRetreat_1
       rect:
         serializedVersion: 2
-        x: 676
-        y: 638
-        width: 277
-        height: 340
+        x: 500
+        y: 500
+        width: 500
+        height: 500
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,10 +156,10 @@ TextureImporter:
       name: SpeedyGooseRetreat_2
       rect:
         serializedVersion: 2
-        x: 157
-        y: 106
-        width: 184
-        height: 395
+        x: 0
+        y: 0
+        width: 500
+        height: 500
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,10 +178,10 @@ TextureImporter:
       name: SpeedyGooseRetreat_3
       rect:
         serializedVersion: 2
-        x: 549
-        y: 146
-        width: 314
-        height: 343
+        x: 500
+        y: 0
+        width: 500
+        height: 500
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -200,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: a5aa08127c648e2daba3bf0be93e0b5c
     internalID: 0
     vertices: []
     indices: 
@@ -208,8 +208,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
-    nameFileIdTable: {}
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":500.0,"y":500.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      SpeedyGooseRetreat_0: -7794232701186020945
+      SpeedyGooseRetreat_1: -3689904241670175150
+      SpeedyGooseRetreat_2: -8264631760489806391
+      SpeedyGooseRetreat_3: 7050347155571998045
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

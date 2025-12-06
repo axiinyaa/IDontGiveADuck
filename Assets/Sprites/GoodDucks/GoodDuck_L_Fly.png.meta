@@ -1,19 +1,13 @@
 fileFormatVersion: 2
-guid: aa9d2186a27480f489f2cbc22fded3ba
+guid: cd4421153597fb2a5a198755ce3ac95b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5191708926620343844
-    second: SpeedyGooseFly_0
+      213: 7406437299309879795
+    second: GoodDuck_L_Fly_0
   - first:
-      213: -8302548308883110658
-    second: SpeedyGooseFly_1
-  - first:
-      213: -5898423954446633667
-    second: SpeedyGooseFly_2
-  - first:
-      213: -5995349727208214924
-    second: SpeedyGooseFly_3
+      213: -1461968832452596757
+    second: GoodDuck_L_Fly_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,13 +103,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SpeedyGooseFly_0
+      name: GoodDuck_L_Fly_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 500
-        width: 500
-        height: 500
+        x: 64
+        y: 1
+        width: 382
+        height: 499
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +118,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cd1e193fc3853f7b0800000000000000
-      internalID: -5191708926620343844
+      spriteID: 3f1a1949b73f8c660800000000000000
+      internalID: 7406437299309879795
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SpeedyGooseFly_1
+      name: GoodDuck_L_Fly_1
       rect:
         serializedVersion: 2
-        x: 500
-        y: 500
-        width: 500
-        height: 500
+        x: 564
+        y: 1
+        width: 382
+        height: 499
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -146,52 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ef480864d4c67cc80800000000000000
-      internalID: -8302548308883110658
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SpeedyGooseFly_2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 500
-        height: 500
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d35bd842aa6942ea0800000000000000
-      internalID: -5898423954446633667
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SpeedyGooseFly_3
-      rect:
-        serializedVersion: 2
-        x: 500
-        y: 0
-        width: 500
-        height: 500
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 47ee485103d3ccca0800000000000000
-      internalID: -5995349727208214924
+      spriteID: beb68fcb71b06bbe0800000000000000
+      internalID: -1461968832452596757
       vertices: []
       indices: 
       edges: []
@@ -200,7 +150,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2f529ef0c32c9cf65a103e87f10d3769
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -208,14 +158,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":500.0,"y":500.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
-    nameFileIdTable:
-      SpeedyGooseFly_0: -5191708926620343844
-      SpeedyGooseFly_1: -8302548308883110658
-      SpeedyGooseFly_2: -5898423954446633667
-      SpeedyGooseFly_3: -5995349727208214924
+      entries: []
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

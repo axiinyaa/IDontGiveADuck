@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6908825711674646287}
   - component: {fileID: 7410920011832131883}
   - component: {fileID: -7678383618637869100}
+  - component: {fileID: 716189293759425095}
   m_Layer: 6
   m_Name: DecoyDuck_S
   m_TagString: Clickable
@@ -173,8 +174,8 @@ MonoBehaviour:
   collision: {fileID: 0}
   targetPosition: {x: 0, y: 0}
   idleAnimation: {fileID: -7678383618637869100}
-  flyAnimation: {fileID: 0}
-  scareAnimation: {fileID: 0}
+  flyAnimation: {fileID: 716189293759425095}
+  scareAnimation: {fileID: 716189293759425095}
   penaltyParticles: {fileID: 0}
   penaltySound: {fileID: 0}
   timePenalty: 5
@@ -295,6 +296,28 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e4061a3cfa2bf3a4f8a94bb0a83fa707, type: 3}
   framesPerSecond: 10
   loop: 0
+  interruptable: 0
+--- !u!114 &716189293759425095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2979584664770396576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3429669b6571b14196d143e1ac8d8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Fly
+  spriteRenderer: {fileID: 0}
+  frames:
+  - {fileID: 1849363560, guid: 943eb4bf2304901b68df2cc3a5f761e2, type: 3}
+  - {fileID: -1807575076, guid: 943eb4bf2304901b68df2cc3a5f761e2, type: 3}
+  - {fileID: -1256802905, guid: 943eb4bf2304901b68df2cc3a5f761e2, type: 3}
+  - {fileID: -1556533657, guid: 943eb4bf2304901b68df2cc3a5f761e2, type: 3}
+  framesPerSecond: 10
+  loop: 1
   interruptable: 0
 --- !u!1001 &4266075244966507496
 PrefabInstance:
